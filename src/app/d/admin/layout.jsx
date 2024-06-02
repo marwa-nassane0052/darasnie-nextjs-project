@@ -1,8 +1,6 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Sidebar from "./_components/Sidebar";
 import DashboardHeader from "./_components/DashboardHeader";
-import "@uiw/react-md-editor/markdown-editor.css";
-import "@uiw/react-markdown-preview/markdown.css";
 
 export default function RootLayout({ children }) {
   return (
