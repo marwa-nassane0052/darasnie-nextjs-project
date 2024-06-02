@@ -1,4 +1,7 @@
+"use client"
+
 import React from "react";
+import { useEffect,useState } from "react";
 import {
   Table,
   TableBody,
@@ -12,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { getAllGroupCOntainer } from "@/actions/client/groups";
 
 const sessions = [
   {
@@ -50,6 +54,23 @@ const sessions = [
 ];
 
 export default function page() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchDataFromApi = async () => {
+      try {
+        const responseData = await getAllGroupCOntainer();
+        setData(responseData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchDataFromApi();
+  }, []); 
+
+
+
   return (
     <div>
       <h1 className="font-bold text-xl mb-8">Demande des Sessions</h1>
@@ -66,27 +87,27 @@ export default function page() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {sessions.map((item) => (
-            <TableRow key={item.id}>
+          {data.map((item) => (
+            <TableRow key={item._id}>
               <TableCell className="font-medium">
-                <User {...item.emitteur} />
+                <User name={item.name} familyname={item.familyname} email={item.email} />
               </TableCell>
-              <TableCell>{item.niveau}</TableCell>
-              <TableCell>{item.module}</TableCell>
+              <TableCell>{item.sessionInfo.level}</TableCell>
+              <TableCell>{item.sessionInfo.moduleName}</TableCell>
               <TableCell>
                 <span
                   className={
-                    item.status == "Acceptee"
+                    item.sessionInfo.valide === true
                       ? "text-green-400"
-                      : item.status == "Refusee" && "text-red-400"
+                      : item.sessionInfo.valide === false && "text-red-400"
                   }
                 >
-                  {item.status}
+                 {item.sessionInfo.valide === true ? "accepted" : "refused"} 
                 </span>
               </TableCell>
               <TableCell className="text-right space-x-2">
                 <Button asChild>
-                  <Link href={`/d/admin/sessions/${item.id}`}>Details</Link>
+                  <Link href={`/d/admin/sessions/${item.sessionInfo.croupContainerId}`}>Details</Link>
                 </Button>
               </TableCell>
             </TableRow>
@@ -97,15 +118,15 @@ export default function page() {
   );
 }
 
-const User = ({ name, email, image }) => {
+const User = ({ name,familyname, email }) => {
   return (
     <div className="flex items-center gap-4">
       <Avatar className="h-[42px] w-[42px]">
-        <AvatarImage src={image} alt="profile image" />
+        <AvatarImage src={"https://api.dicebear.com/8.x/lorelei/svg?seed=Sarah&flip=true"} alt="profile image" />
         <AvatarFallback>SC</AvatarFallback>
       </Avatar>
       <div>
-        <p className="font-bold text-sm">{name}</p>
+        <p className="font-bold text-sm">{name} {familyname}</p>
         <p className="text-xs text-gray-500">{email}</p>
       </div>
     </div>

@@ -5,6 +5,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useFormState, useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
+
 import {
   Form,
   FormControl,
@@ -15,7 +18,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { authenticate } from "@/actions/server/auth";
-
+import { signinUser } from "@/actions/client/auth";
+import { GetUserType } from "@/actions/client/auth";
+import { AwardIcon } from "lucide-react";
+import { redirect } from "next/navigation";
 const formSchema = z.object({
   email: z.string().email("email is not valid."),
   password: z.string().min(6, {
@@ -24,7 +30,6 @@ const formSchema = z.object({
 });
 
 export default function page() {
-  const [errorMessage, dispatch] = useFormState(authenticate, undefined);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -32,10 +37,37 @@ export default function page() {
       password: "",
     },
   });
+  const { toast } = useToast();
+
+  const router=useRouter()
+
+  async function LoginUser(){
+    const values=form.getValues()
+    try{
+      signinUser(values)
+      toast({
+        title: "Signin user Successful",
+        description: "Verifier votre email pour le lien de validation",
+      });
+     const type=await GetUserType()
+     if(type==='student'){
+      router.push('/d/student');
+     }else if(type ==='prof'){
+      router.push('/d/teacher');
+     }else if(type==='admin'){
+      router.push('/d/admin');
+
+     }
+
+    }catch(err){
+      console.log(err)
+    }
+    
+  }
 
   return (
     <Form {...form}>
-      <form action={dispatch} className="space-y-8">
+      <form  className="space-y-8" onSubmit={form.handleSubmit(LoginUser)}>
         <FormField
           control={form.control}
           name="email"
@@ -73,9 +105,7 @@ export default function page() {
           aria-live="polite"
           aria-atomic="true"
         >
-          {errorMessage && (
-            <p className="text-sm text-red-500">{errorMessage}</p>
-          )}
+         
         </div>
       </form>
     </Form>
@@ -86,7 +116,7 @@ function LoginButton() {
   const { pending } = useFormStatus();
 
   return (
-    <Button className="mt-4 w-full" aria-disabled={pending}>
+    <Button className="mt-4 w-full" aria-disabled={pending} >
       {pending ? "Loading" : "Login"}
     </Button>
   );

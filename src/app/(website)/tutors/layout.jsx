@@ -1,5 +1,5 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
-import TutorsHeader from "./_components/tutorsHeader";
+import TutorsHeader from "./_components/TutorsHeader";
 import Sidebar from "./_components/Sidebar";
 export default function RootLayout({ children }) {
   return (

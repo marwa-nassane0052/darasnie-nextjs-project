@@ -20,7 +20,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-
+import { useRouter } from "next/navigation";
 const formSchema = z
   .object({
     name: z.string().min(2).max(50),
@@ -71,27 +71,30 @@ export default function page() {
   });
   // 2. Define a submit handler.
 
+  const router=useRouter()
   async function onSubmit(values) {
-    console.log(values);
     setLoading(true);
     delete values.password2;
-    await sigupStudent({ ...values, phone: parseInt(values.phone) }).then(
-      (res) => {
-        toast({
-          title: "Sign up Successful",
-          description: "Verifier votre email pour le lien de validation",
-        });
-      },
-      (errorMessage) => {
-        toast({
-          title: "Sign up Failed",
-          description: "something went wrong",
-          variant: "destructive",
-        });
-      }
-    );
+  
+    try {
+    sigupStudent({ ...values, phone: parseInt(values.phone) });
+      router.push('/signin');
+      toast({
+        title: "Sign up Successful",
+        description: "Verifier votre email pour le lien de validation",
+      });
+    } catch (error) {
+      toast({
+        title: "Sign up Failed",
+        description: "something went wrong",
+        variant: "destructive",
+      });
+    }
+  
     setLoading(false);
   }
+  
+
 
   const goNext = (step) => {
     form

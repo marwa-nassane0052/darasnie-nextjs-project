@@ -1,5 +1,4 @@
 "use client";
-
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -13,6 +12,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useState, useEffect } from "react";
+import { getProfInfo } from "@/actions/client/auth";
 
 const formSchema = z
   .object({
@@ -35,10 +36,13 @@ const formSchema = z
   });
 
 export default function ProfileForm() {
+
+  
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
+      name:"",
       familyname: "",
       email: "",
       phone: "",

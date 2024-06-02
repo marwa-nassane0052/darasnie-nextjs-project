@@ -1,7 +1,22 @@
-"use client";
-import { FiUpload } from 'react-icons/fi'; // Import the upload icon from react-icons
+"use client"
+import { FiUpload } from 'react-icons/fi';
+import { Input } from "@/components/ui/input";
+import axios from "axios";
 
-import { z } from "zod";
+import { Label } from "@/components/ui/label";
+import {singupProf} from "@/actions/client/auth"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+
+} from "@/components/ui/select";
+
+import { number, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -14,34 +29,23 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { sigupStudent } from "@/actions/client/auth";
-import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
-import Link from "next/link";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from 'next/navigation';
+
 
 const formSchema = z
   .object({
     name: z.string().min(2).max(50),
-    familyname: z.string().min(2).max(50),
-
-    phone: z.string().min(10).max(10),
+    familyname:z.string().min(2).max(50),
     email: z.string().email(),
-    level: z.enum(["cem", "lycee"], {
-      required_error: "You need to select a notification type.",
-    }),
-    year: z.enum(["1", "2", "3", "4"], {
-      required_error: "You need to select a notification type.",
-    }),
-    major: z.enum(["math", "science", "lettre", "gestion"], {
-      required_error: "You need to select a notification type.",
-    }),
+    phone:z.coerce.number(),
     password: z.string().min(6).max(50),
     password2: z.string().min(6),
-  })
-  .superRefine(({ password2, password }, ctx) => {
+    Cv: z.string(),
+    picture: z.string(),
+   
+  }).superRefine(({ password2, password }, ctx) => {
     if (password2 !== password) {
       ctx.addIssue({
         code: "custom",
@@ -51,127 +55,173 @@ const formSchema = z
     }
   });
 
-export default function page() {
-  const [step, setStep] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
-  // 1. Define your form.
+
+export default function AddSessionDialog({ children }) {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      familyname: "",
-      email: "",
-      phone: "",
-      password: "",
-      password2: "",
-    },
-  });
-  // 2. Define a submit handler.
+      name:"",
+      familyname:"",
+      email:"",
+      phone:null,
+      password:"",
+      password2:"",
+      picture:"",
+      Cv:""
 
-  async function onSubmit(values) {
-    console.log(values);
-    setLoading(true);
-    delete values.password2;
-    await sigupStudent({ ...values, phone: parseInt(values.phone) }).then(
-      (res) => {
+    }
+  })
+    
+    const [isDisabled,setIsdisabled]=useState(true)
+    const { toast } = useToast();
+    const router=useRouter()
+
+    async function onSubmit(values) {
+      delete values.password2;
+      
+      const formData = new FormData();
+      formData.append('name', form.getValues('name'));
+      formData.append('familyname', values.familyname);
+      formData.append('phone', values.phone);
+
+      formData.append('password', values.password);
+      formData.append('email', values.email);
+
++      formData.append('picture', values.picture);
+    
+     const dataBody=JSON.stringify(formData)
+    console.log(values)
+
+      try {
+        const res= singupProf(values)
         toast({
           title: "Sign up Successful",
           description: "Verifier votre email pour le lien de validation",
         });
-      },
-      (errorMessage) => {
+        router.push('/signin');
+
+      } catch (err) {
         toast({
           title: "Sign up Failed",
-          description: "something went wrong",
+          description: "Something went wrong",
           variant: "destructive",
         });
+        console.log(err);
       }
-    );
-    setLoading(false);
-  }
-
-  const goNext = (step) => {
-    form
-      .trigger([
-        "name",
-        "familyname",
-        "email",
-        "phone",
-        "password",
-        "password2",
-      ])
-      .then((isValid) => {
-        if (isValid) {
-          setStep(step);
-        }
-      });
-  };
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mb-12">
-        <div className={step == 0 ? "block" : "hidden"}>
+    }
+    
+  return(
+   
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}   className="space-y-8 mb-12" >
+          <div className="block">
           <h1 className="text-4xl mt-[35px]">Signup</h1>
           <p className="text-[13px] text-[#A3A9AF] mt-[23px]">
             Entrez vos détails ci-dessous pour créer votre compte et commencer
           </p>
-          <div className="justify-content-start grid md:grid-cols-2 gap-x-16 gap-y-7 mt-[54px] text-sm">
+          <div >
+            <div className="grid md:grid-cols-2 gap-x-16 gap-y-7 mt-[54px] text-sm">
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nom</FormLabel>
+                 <FormLabel> Nom</FormLabel>
                   <FormControl>
-                    <Input placeholder="John" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="familyname"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>familyname</FormLabel>
-                  <FormControl>
-                    <Input placeholder="John" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>numero telephone</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="John" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>email</FormLabel>
-                  <FormControl>
-                    <Input type="email" placeholder="John" {...field} />
+                    <Input  placeholder="John"  id="module" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
+          <FormField
+              control={form.control}
+              name="familyname"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nom de famille</FormLabel>
+                  <FormControl>
+                    <Input placeholder="john..." id="tarif" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            </div>
+         
+           <div className="grid md:grid-cols-2 gap-x-16 gap-y-7 mt-[54px] text-sm">
+           <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" placeholder="jhon@gmail.com"  id="email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+      <FormField
+              control={form.control}
+              name="phone"
+              className="space-y-2"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Numero telephone</FormLabel>
+                  <FormControl>
+                    <Input   type="number" placeholder="0668320660"  id="phone_number" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+   
+           
+           </div>
+           <div className="grid md:grid-cols-2 gap-x-16 gap-y-7 mt-[54px] text-sm">
+
+           <FormField
+              control={form.control}
+              name="password"
+              className="space-y-2"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel> mot de passe</FormLabel>
+                  <FormControl>
+                    <Input  placeholder="Re-enter your password" type="password"  id="studyDuration" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />   
+
+             <FormField
+              control={form.control}
+              name="password2"
+              className="space-y-2"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirmez le mot de passe</FormLabel>
+                  <FormControl>
+                    <Input  placeholder="Re-enter your password" type="password" id="studentNumber" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />    
+            
+
+           </div>
+           <div className="grid md:grid-cols-2 gap-x-16 gap-y-7 mt-[54px] text-sm">
+
+
 <FormField
   control={form.control}
-  name="file"
+  name="Cv"
   render={({ field }) => (
     <FormItem>
       <FormLabel htmlFor="file">Upload cv</FormLabel>
@@ -199,7 +249,7 @@ export default function page() {
 
 <FormField
   control={form.control}
-  name="image"
+  name="picture"
   render={({ field }) => (
     <FormItem>
       <FormLabel htmlFor="image">Photo de Profile</FormLabel>
@@ -222,53 +272,23 @@ export default function page() {
     </FormItem>
   )}
 />
-          
 
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Enter your password"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password2"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirmer password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Re-enter your password"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}  
-            />
-            <Link href="/">
-              <Button className="w-full" variant="outline" type="button">
-                Cancel
-              </Button>
-            </Link>
-            <Button className="w-full" type="submit">
-              {loading ? "Submiting" : "Submit"}
-            </Button>
+           </div>
+        
+
+
+
+          <Button className="w-full md:col-start-2 lg:col-start-3">
+            Sauvegarder
+          </Button>
           </div>
-        </div>
-      </form>
-    </Form>
-  );
+          </div>
+          </form>
+
+        </Form>
+        
+
+
+  )
 }
+ 

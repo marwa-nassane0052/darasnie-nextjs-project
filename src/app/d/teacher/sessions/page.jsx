@@ -1,3 +1,4 @@
+"use client"
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,6 +11,8 @@ import {
 import Link from "next/link";
 import { FaPlus } from "react-icons/fa";
 import AddSessionDialog from "./_components/AddSessionDialog";
+import { useEffect,useState } from "react";
+import { getGroupContainerForProf } from "@/actions/client/groups";
 
 const sessions = [
   {
@@ -47,6 +50,20 @@ const sessions = [
 ];
 
 export default function page() {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const fetchDataFromApi = async () => {
+      try {
+        const responseData = await getGroupContainerForProf();
+        setData(responseData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchDataFromApi();
+  }, []); 
+
   return (
     <div>
       <h1 className="font-bold text-xl mb-5">Mes Sessions</h1>
@@ -60,37 +77,37 @@ export default function page() {
             <FaPlus /> Add Session
           </Button>
         </AddSessionDialog>
-        {sessions.map((session) => (
-          <Card key={session.id}>
+        {data.map((s) => (
+          <Card key={s._id}>
             <CardHeader>
-              <CardTitle>Module: {session.module}</CardTitle>
+              <CardTitle>Module: {s.moduleName}</CardTitle>
               <CardDescription>
-                {session.niveau}, {session.annee}
+                {s.level}, {s.year}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <p>
-                <strong>Tarif:</strong> <span>{session.tarif}</span>
+                <strong>Tarif:</strong> <span>{s.price}</span>
               </p>
               <p>
-                <strong>Duree:</strong> <span>{session.duree}</span>
+                <strong>Duree:</strong> <span>{s.sessionDuration}</span>
               </p>
               <p>
-                <strong>Groupes:</strong> <span>{session.groupes} groupes</span>
+                <strong>Groupes:</strong> <span> {s.groups.length} groupes</span>
               </p>
               
               <p>
-                <strong>Nombre des seances:</strong> <span>{session.Nb_seance}</span>
+                <strong>Nombre des seances:</strong> <span>{s.sessionsNumberPerWeek}</span>
               </p>
             </CardContent>
             <CardFooter>
               <Button variant="link" asChild className="ml-auto">
-                <Link href={`/d/teacher/sessions/${session.id}/forum`}>
+                <Link href={`/d/teacher/sessions/${s._id}/forum`}>
                   Forum
                 </Link>
               </Button>
               <Button asChild>
-                <Link href={`/d/teacher/sessions/${session.id}`}>Details</Link>
+                <Link href={`/d/teacher/sessions/${s._id}`}>Details</Link>
               </Button>
             </CardFooter>
           </Card>

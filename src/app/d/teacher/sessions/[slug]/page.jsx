@@ -1,3 +1,4 @@
+"use client"
 import {
   Table,
   TableBody,
@@ -18,8 +19,11 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import AddGroupDialog from "../_components/AddGroupDialog";
+import { getGroupContainerByid,getGroupsByGroupContainerId } from "@/actions/client/groups";
+import { useEffect,useState } from "react";
 
-const groups = [
+
+const groupsFixed = [
   {
     id: "1",
     group: "Groupe 01",
@@ -40,7 +44,31 @@ const groups = [
   },
 ];
 
-export default function page({ params }) {
+export default function page({params}) {
+  const groupContainerId=params.slug
+  const [data, setData] = useState([]);
+  const [groups, setGroups] = useState([]);
+
+  useEffect(() => {
+    const fetchDataFromApi = async () => {
+      try {
+        const responseData = await getGroupContainerByid(groupContainerId);
+        setData(responseData);
+        const responseData2 = await getGroupsByGroupContainerId(groupContainerId);
+        setGroups(responseData2)
+        
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchDataFromApi();
+  }, [groupContainerId]);   
+
+
+  
+
+  
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -53,11 +81,11 @@ export default function page({ params }) {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Session {params.slug}</BreadcrumbPage>
+              <BreadcrumbPage>Session  {data.moduleName} {data.sessionsNumberPerWeek}  </BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <AddGroupDialog>
+        <AddGroupDialog nb={data.sessionsNumberPerWeek} idGC={data._id}>
           <Button>Cree un groupe</Button>
         </AddGroupDialog>
       </div>
@@ -75,10 +103,10 @@ export default function page({ params }) {
         <TableBody>
           {groups.map((item) => (
             <TableRow key={item.id}>
-              <TableCell className="font-medium">{item.group}</TableCell>
-              <TableCell>{new Date(item.date).toDateString()}</TableCell>
+              <TableCell className="font-medium">{item.groupName}</TableCell>
+              <TableCell>{new Date(item.startingDates[0]).toDateString()}</TableCell>
               <TableCell>
-                {new Date(item.deadline).getTime() < new Date().getTime() ? (
+                {new Date(item.deadlineDate).getTime() < new Date().getTime() ? (
                   <span className="text-red-500">Ferme</span>
                 ) : (
                   <span className="text-green-500">Ouvert</span>
