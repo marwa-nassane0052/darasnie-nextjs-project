@@ -1,14 +1,13 @@
-"use client";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
-import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
-import { useState } from "react";
 import { Card } from "antd";
+import CalendarComponent from "@/components/Calendar";
+import { auth } from "@/auth";
 
 const events = [
   {
@@ -17,12 +16,11 @@ const events = [
     title: "Session ",
   },
 ];
-const localizer = momentLocalizer(moment);
 
 const groups = [
   {
     id: "1",
-    group: "Groupe 02",
+    group: "Groupe 01",
     deadline: "12/12/2024",
     dates: "[12/12/2012,12/12/2012,12/12/2012]",
   },
@@ -46,9 +44,8 @@ const groups = [
   },
 ];
 
-export default function page({ params }) {
-  const [view, setView] = useState("month");
-  const [date, setDate] = useState(new Date());
+export default async function page({ params }) {
+  let session = await auth();
   return (
     <div>
       <div className="flex justify-between items-center"></div>
@@ -78,40 +75,23 @@ export default function page({ params }) {
       <br />
       <br />
       <div className="flex px-7">
-        <Tabs defaultValue="group1">
+        <Tabs defaultValue={`group${groups[0].id}`}>
           <TabsList>
-            <TabsTrigger className=" px-16 text-center" value="group1">
-              Group1
-            </TabsTrigger>
-            <TabsTrigger className="px-16 text-center" value="group2">
-              Group2
-            </TabsTrigger>
-            <TabsTrigger className="px-16 text-center" value="group3">
-              Group3
-            </TabsTrigger>
-
-            <TabsTrigger className="px-16 text-center" value="group4">
-              Group3
-            </TabsTrigger>
+            {groups.map(({ id, group }) => (
+              <TabsTrigger
+                className="px-16 text-center"
+                value={`group${id}`}
+                key={id}
+              >
+                {group}
+              </TabsTrigger>
+            ))}
           </TabsList>
           {groups.map((item) => (
             <TabsContent value={`group${item.id}`} key={item.id}>
               <div className="grid grid-cols-8 gap-4 bg-white p-6 rounded">
                 <div className="col-span-6">
-                  <Calendar
-                    localizer={localizer}
-                    events={events}
-                    startAccessor="start"
-                    endAccessor="end"
-                    date={date}
-                    view={view}
-                    views={["month", "week", "day"]}
-                    onView={(view) => setView(view)}
-                    onNavigate={(date) => {
-                      setDate(new Date(date));
-                    }}
-                    style={{ height: 400, width: 600 }}
-                  />
+                  <CalendarComponent events={events} />
                 </div>
                 <div className="col-span-2">
                   <Card className="space-y-3 bg-slate-50">
@@ -120,8 +100,16 @@ export default function page({ params }) {
                       <p>{item.deadline}</p>
                     </div>
                     <br />
-                    <Button asChild className="flex justify-center ">
-                      <Link href="">Appliquer</Link>
+                    <Button asChild className="flex justify-center">
+                      <Link
+                        href={
+                          session
+                            ? `/apply/${item.id}`
+                            : `/signin?source=/tutors/${params.slug}`
+                        }
+                      >
+                        Appliquer
+                      </Link>
                     </Button>
                   </Card>
                 </div>

@@ -7,9 +7,8 @@ import { FaListAlt } from "react-icons/fa";
 import { FaUsers } from "react-icons/fa";
 import { MdLogout, MdWindow } from "react-icons/md";
 import { RiMoneyEuroBoxFill } from "react-icons/ri";
-import { AwardIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { LogOut } from "@/actions/client/auth";
+import { IoLanguage } from "react-icons/io5";
+
 const MENU_ITEMS = [
   {
     label: "Dashboard",
@@ -31,15 +30,14 @@ const MENU_ITEMS = [
     icon: <RiMoneyEuroBoxFill size={19} />,
     href: "/d/admin/paiement",
   },
+  {
+    label: "Langues",
+    icon: <IoLanguage size={19} />,
+    href: "/d/admin/languages",
+  },
 ];
 
 export default function Sidebar() {
-  const router=useRouter()
-  async function handleLogout() {
-    await LogOut(); 
-    router.push('/signin');
-  }
-
   const pathname = usePathname();
   return (
     <aside className="hidden lg:flex px-5 h-screen border-r py-16 flex-col justify-between items-center">
@@ -67,7 +65,6 @@ export default function Sidebar() {
         <Button
           variant="ghost"
           className="flex-row-reverse w-full justify-center gap-3 text-red-500"
-          onClick={handleLogout}
         >
           <MdLogout size={19} /> Deconnecter
         </Button>

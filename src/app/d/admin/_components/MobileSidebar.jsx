@@ -8,8 +8,7 @@ import { MdLogout, MdWindow } from "react-icons/md";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { HiMenu } from "react-icons/hi";
 import { RiMoneyEuroBoxFill } from "react-icons/ri";
-import { useRouter } from "next/navigation";
-import { LogOut } from "@/actions/client/auth";
+
 const MENU_ITEMS = [
   {
     label: "Dashboard",
@@ -34,11 +33,6 @@ const MENU_ITEMS = [
 ];
 
 export default function MobileSidebar() {
-  const router=useRouter()
-  async function handleLogout() {
-    await LogOut(); 
-    router.push('/signin');
-  }
   const pathname = usePathname();
   return (
     <Sheet>
@@ -75,7 +69,6 @@ export default function MobileSidebar() {
             <Button
               variant="ghost"
               className="flex-row-reverse w-full justify-center gap-3"
-              onClick={handleLogout}
             >
               <MdLogout size={19} /> Deconnecter
             </Button>

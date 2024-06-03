@@ -8,7 +8,7 @@ import { FaUser } from "react-icons/fa";
 import { MdLogout, MdWindow } from "react-icons/md";
 import { RiMoneyEuroBoxFill } from "react-icons/ri";
 import { useRouter } from "next/navigation";
-import { LogOut } from "@/actions/client/auth";
+import { signOut } from "@/auth";
 
 const MENU_ITEMS = [
   {
@@ -40,10 +40,10 @@ const MENU_ITEMS = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const router=useRouter()
+  const router = useRouter();
   async function handleLogout() {
-    await LogOut(); 
-    router.push('/signin');
+    "use server";
+    await signOut();
   }
   return (
     <aside className="hidden lg:flex px-5 h-screen border-r py-16 flex-col justify-between items-center">

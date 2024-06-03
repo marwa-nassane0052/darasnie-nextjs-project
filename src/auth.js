@@ -4,9 +4,8 @@ import Credentials from "next-auth/providers/credentials";
 import { z } from "zod";
 import { signinUser } from "@/actions/client/auth";
 
-export const { auth, signIn, signOut } = NextAuth({
+export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
-
   providers: [
     Credentials({
       async authorize(credentials) {
@@ -19,7 +18,7 @@ export const { auth, signIn, signOut } = NextAuth({
           if (!user) return null;
           else
             return {
-              name: "Omar Mokhfi",
+              name: user.name,
               email: email,
               access_token: user.token,
             };
