@@ -7,6 +7,7 @@ import Link from "next/link"
 import TuttoringImage from '../homepage/images/Tutoring illustration.svg'
 import { useRouter } from 'next/navigation';
 import { useState,useEffect } from 'react'; // Ajout de l'importation useState
+import Footer from "../_components/Footer"
 
 
 //import './buttonanimation.css'
@@ -110,6 +111,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   )
 }

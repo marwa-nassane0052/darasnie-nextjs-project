@@ -10,7 +10,7 @@ import { RiMoneyEuroBoxFill } from "react-icons/ri";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { HiMenu } from "react-icons/hi";
 import { useRouter } from "next/navigation";
-import { LogOut } from "@/actions/client/auth";
+import { signOut } from "@/auth";
 
 const MENU_ITEMS = [
   {
@@ -44,8 +44,8 @@ export default function MobileSidebar() {
   const pathname = usePathname();
   const router=useRouter()
   async function handleLogout() {
-    await LogOut(); 
-    router.push('/signin');
+    "use server"
+    await signOut();
   }
   return (
     <Sheet>
