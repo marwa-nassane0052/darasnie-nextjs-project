@@ -98,7 +98,7 @@ export default function AddSessionDialog({ children }) {
           title: "Sign up Successful",
           description: "Verifier votre email pour le lien de validation",
         });
-        router.push('/signin');
+        //router.push('/signin');
 
       } catch (err) {
         toast({

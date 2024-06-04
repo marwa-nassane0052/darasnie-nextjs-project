@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/Components/ui/button";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import TuttoringImage from "../images/TutoringIllustration.svg";

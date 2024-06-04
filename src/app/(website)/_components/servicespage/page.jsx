@@ -1,8 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Card, CardContent } from "@/Components/ui/card";
-import { Button } from "@/Components/ui/button";
-
+import {Card,CardContent} from "@/components/ui/card"
+import { Button } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import academic_student from "../images/academic_student.png";
