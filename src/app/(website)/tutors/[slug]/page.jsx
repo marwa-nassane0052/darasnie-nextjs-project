@@ -1,3 +1,4 @@
+"use client"
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,7 +9,8 @@ import moment from "moment";
 import { Card } from "antd";
 import CalendarComponent from "@/components/Calendar";
 import { auth } from "@/auth";
-
+import { useState,useEffect} from "react";
+import LoginUser from '@/app/(website)/tutors/_components/Sidebar'
 const events = [
   {
     start: moment().toDate(),
@@ -45,6 +47,13 @@ const groups = [
 ];
 
 export default async function page({ params }) {
+  const [selectedData, setSelectedData] = useState([]);
+  useEffect(() => {
+    setSelectedData(LoginUser())
+    console.log(selectedData)
+  },[]);
+
+
   let session = await auth();
   return (
     <div>

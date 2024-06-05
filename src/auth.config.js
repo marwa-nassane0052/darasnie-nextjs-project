@@ -4,16 +4,13 @@ export const authConfig = {
     signIn: "/signin",
   },
   callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
-      // const isLoggedIn = !!auth?.user;
-      // const isOnDashboardPage = nextUrl.pathname.startsWith("/dashboard");
-      // const isOnSigninPage = nextUrl.pathname.startsWith("/signin");
-      // if (isOnDashboardPage) {
-      //   if (isLoggedIn) return true;
-      //   return false;
-      // } else if (isLoggedIn && isOnSigninPage) {
-      //   return Response.redirect(new URL("/dashboard", nextUrl));
-      // }
+    async authorized({ auth, request: { nextUrl } }) {
+      const isLoggedIn = !!auth?.user;
+      const isOnDashboardPage = nextUrl.pathname.startsWith("/d");
+      if (isOnDashboardPage) {
+        if (isLoggedIn) return true;
+        return false;
+      }
       return true;
     },
   },

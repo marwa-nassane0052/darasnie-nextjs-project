@@ -10,6 +10,9 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import LoginUser from '@/app/(website)/tutors/_components/Sidebar'
+import { useState,useEffect } from "react";
+import { useFilter } from "./FilterContext"; // Import the context
 
 const sessions = [
   {
@@ -83,12 +86,15 @@ const sessions = [
 ];
 
 export default function page() {
+  const { filteredData } = useFilter(); // Use the context
+
+
   return (
     <div>
       <div className=" mt-6 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
     
-        {sessions.map((session) => (
-          <Card key={session.id} className="">
+        {filteredData?.map((session) => (
+          <Card key={session._id} className="">
         <CardHeader className="flex">
   <CardTitle className="flex items-center">
     <Avatar className="h-[80px] w-[80px] inline-block">
@@ -115,7 +121,7 @@ export default function page() {
               </p>
               
               <p>
-                <strong>Module:</strong> <span>{session.Module}</span>
+                <strong>Module:</strong> <span>{session.moduleName}</span>
               </p>
               
               <p>

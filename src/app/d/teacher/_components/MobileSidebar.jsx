@@ -10,8 +10,7 @@ import { RiMoneyEuroBoxFill } from "react-icons/ri";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { HiMenu } from "react-icons/hi";
 import { useRouter } from "next/navigation";
-import { signOut } from "@/auth";
-
+import { handleLogout } from "@/actions/server/auth";
 const MENU_ITEMS = [
   {
     label: "Dashboard",
@@ -42,11 +41,7 @@ const MENU_ITEMS = [
 
 export default function MobileSidebar() {
   const pathname = usePathname();
-  const router=useRouter()
-  async function handleLogout() {
-    "use server"
-    await signOut();
-  }
+ 
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -75,13 +70,15 @@ export default function MobileSidebar() {
             </div>
           </div>
           <div className="w-full">
+            
+          <form action={handleLogout} className="w-full">
             <Button
               variant="ghost"
               className="flex-row-reverse w-full justify-center gap-3"
-              onClick={handleLogout}
             >
               <MdLogout size={19} /> Deconnecter
             </Button>
+</form>
           </div>
         </aside>
       </SheetContent>

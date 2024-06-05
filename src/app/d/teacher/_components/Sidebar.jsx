@@ -7,8 +7,7 @@ import { FaListAlt, FaRegCalendarAlt } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
 import { MdLogout, MdWindow } from "react-icons/md";
 import { RiMoneyEuroBoxFill } from "react-icons/ri";
-import { useRouter } from "next/navigation";
-import { signOut } from "@/auth";
+import { handleLogout } from "@/actions/server/auth";
 
 const MENU_ITEMS = [
   {
@@ -40,11 +39,7 @@ const MENU_ITEMS = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const router = useRouter();
-  async function handleLogout() {
-    "use server";
-    await signOut();
-  }
+
   return (
     <aside className="hidden lg:flex px-5 h-screen border-r py-16 flex-col justify-between items-center">
       <div className="space-y-12">
@@ -67,15 +62,14 @@ export default function Sidebar() {
           ))}
         </div>
       </div>
-      <div className="w-full">
+      <form action={handleLogout} className="w-full">
         <Button
           variant="ghost"
           className="flex-row-reverse w-full justify-center gap-3 text-red-500"
-          onClick={handleLogout}
         >
           <MdLogout size={19} /> Deconnecter
         </Button>
-      </div>
+      </form>
     </aside>
   );
 }

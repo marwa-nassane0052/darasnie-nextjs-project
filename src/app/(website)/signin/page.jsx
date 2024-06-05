@@ -3,11 +3,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
-
 import {
   Form,
   FormControl,
@@ -17,11 +16,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { authenticate } from "@/actions/server/auth";
-import { signinUser } from "@/actions/client/auth";
 import { GetUserType } from "@/actions/client/auth";
-import { AwardIcon } from "lucide-react";
-import { redirect } from "next/navigation";
+import { authenticate } from "@/actions/server/auth";
+import { useState } from "react";
 const formSchema = z.object({
   email: z.string().email("email is not valid."),
   password: z.string().min(6, {
@@ -37,37 +34,59 @@ export default function page() {
       password: "",
     },
   });
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const router=useRouter()
+  const router = useRouter();
+  const params = useSearchParams();
 
-  async function LoginUser(){
-    const values=form.getValues()
-    try{
-      signinUser(values)
+  async function LoginUser(values) {
+    setIsLoading(true);
+    try {
+      let result = await authenticate(values);
+      if (result.success) onSigninSuccess();
+      else
+        toast({
+          title: "Signin Failed",
+          variant: "destructive",
+        });
+    } catch (error) {
       toast({
-        title: "Signin user Successful",
-        description: "Verifier votre email pour le lien de validation",
+        title: "Signin Failed",
+        variant: "destructive",
       });
-     const type=await GetUserType()
-     if(type==='student'){
-      router.push('/d/student');
-     }else if(type ==='prof'){
-      router.push('/d/teacher');
-     }else if(type==='admin'){
-      router.push('/d/admin');
-
-     }
-
-    }catch(err){
-      console.log(err)
     }
-    
+    setIsLoading(false);
   }
+
+  const onSigninSuccess = async () => {
+    toast({
+      title: "Signin Successful",
+    });
+    const type = await GetUserType();
+    let callback = params.get("source");
+    if (!callback) {
+      switch (type) {
+        case "student":
+          callback = "/d/student";
+          break;
+        case "prof":
+          callback = "/d/teacher";
+          break;
+        case "admin":
+          callback = "/d/admin";
+          break;
+        default:
+          callback = "/signin";
+          break;
+      }
+    }
+    router.push(callback);
+  };
 
   return (
     <Form {...form}>
-      <form  className="space-y-8" onSubmit={form.handleSubmit(LoginUser)}>
+      <form className="space-y-8" onSubmit={form.handleSubmit(LoginUser)}>
         <FormField
           control={form.control}
           name="email"
@@ -99,24 +118,15 @@ export default function page() {
             </FormItem>
           )}
         />
-        <LoginButton />
-        <div
-          className="flex h-8 items-end space-x-1"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-         
-        </div>
+        <LoginButton pending={isLoading} />
       </form>
     </Form>
   );
 }
 
-function LoginButton() {
-  const { pending } = useFormStatus();
-
+function LoginButton({ pending }) {
   return (
-    <Button className="mt-4 w-full" aria-disabled={pending} >
+    <Button className="mt-4 w-full" aria-disabled={pending}>
       {pending ? "Loading" : "Login"}
     </Button>
   );

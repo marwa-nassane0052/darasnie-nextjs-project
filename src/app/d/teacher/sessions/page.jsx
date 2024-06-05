@@ -1,4 +1,3 @@
-"use client"
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,7 +10,6 @@ import {
 import Link from "next/link";
 import { FaPlus } from "react-icons/fa";
 import AddSessionDialog from "./_components/AddSessionDialog";
-import { useEffect,useState } from "react";
 import { getGroupContainerForProf } from "@/actions/client/groups";
 
 const sessions = [
@@ -49,20 +47,8 @@ const sessions = [
   },
 ];
 
-export default function page() {
-  const [data, setData] = useState([]);
-  useEffect(() => {
-    const fetchDataFromApi = async () => {
-      try {
-        const responseData = await getGroupContainerForProf();
-        setData(responseData);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchDataFromApi();
-  }, []); 
+export default async function page() {
+  const data = await getGroupContainerForProf();
 
   return (
     <div>
@@ -77,7 +63,7 @@ export default function page() {
             <FaPlus /> Add Session
           </Button>
         </AddSessionDialog>
-        {data.map((s) => (
+        {data?.map((s) => (
           <Card key={s._id}>
             <CardHeader>
               <CardTitle>Module: {s.moduleName}</CardTitle>

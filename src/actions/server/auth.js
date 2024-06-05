@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { redirect } from "next/navigation";
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 import { isRedirectError } from "next/dist/client/components/redirect";
 
 export async function verifyEmail(token) {
@@ -19,14 +19,36 @@ export async function verifyEmail(token) {
   }
 }
 
-export async function authenticate(prevState, formData) {
+export async function authenticate(data) {
   try {
-    await signIn("credentials", formData);
-    redirect("/");
+    let isSuccess = true;
+    await signIn("credentials", data).then(
+      () => {},
+      (err) => {
+        if (err.message != "NEXT_REDIRECT") isSuccess = false;
+      }
+    );
+    if (isSuccess)
+      return {
+        success: true,
+        message: "Logged in successfully",
+      };
+    else
+      return {
+        success: false,
+        message: "Invalid Credentials",
+      };
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
     }
-    return "Invalid Credentials";
+    return {
+      success: false,
+      message: "Invalid Credentials",
+    };
   }
+}
+
+export async function handleLogout() {
+  await signOut();
 }

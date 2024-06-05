@@ -26,12 +26,18 @@ export const sigupStudent = (body) => {
 };
 
 export const signinUser = async (body) => {
-  try {
-    const user = await axios.post("http://localhost:3001/auth/login", body);
-    return user;
-  } catch (err) {
-    console.log(err);
-  }
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await axios.post(
+        "http://localhost:3001/auth/login",
+        body
+      );
+      resolve(data);
+    } catch (err) {
+      console.log(err.message);
+      resolve(null);
+    }
+  });
 };
 
 export const GetUserType = async () => {
@@ -40,13 +46,12 @@ export const GetUserType = async () => {
     if (!session) throw new Error("unauthorized");
     const res = await axios.get("http://localhost:3001/auth/userRole", {
       headers: {
-        Authorization: session.access_token,
+        Authorization: session.accessToken,
       },
     });
-    console.log(res.data);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
   }
 };
 
@@ -70,7 +75,7 @@ export const getProfId = async (body) => {
     if (!session) throw new Error("unauthorized");
     const res = await axios.get("http://localhost:3001/auth/user/prof", {
       headers: {
-        Authorization: session.access_token,
+        Authorization: session.accessToken,
       },
     });
     console.log(res.data);

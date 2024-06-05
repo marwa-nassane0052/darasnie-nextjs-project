@@ -12,11 +12,11 @@ const _axios = axios.create(axiosConfig);
 
 _axios.interceptors.request.use(
   async function (config) {
-    let session = auth();
+    let session = await auth();
     if (session.accessToken) {
       return {
         ...config,
-        headers: { common: { Authorization: `${session.accessToken}` } },
+        headers: { Authorization: `${session.accessToken}` },
       };
     } else return config;
   },

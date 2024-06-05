@@ -102,25 +102,29 @@ export default function Posting({name,role,titre,text,createdAT,img,idP}) {
         </div>
       </div>
      <Form {...form}>
-     <form className="flex gap-2">
-     <FormField
+     <form className="flex">
+        <div className="flex justify-between items-center space gap-2">
+        <FormField
           control={form.control}
           name="content"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Titre de publication</FormLabel>
               <FormControl>
                 <Input
                   type="text"
                   placeholder="Ajouter commontaire"
                   {...field}
+                  
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button  onClick={onSubmit} >Commenter</Button>
+                <Button  onClick={onSubmit} >Commenter</Button>
+
+        </div>
+      
       </form>
      </Form>
 

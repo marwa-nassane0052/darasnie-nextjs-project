@@ -87,11 +87,7 @@ export default function page() {
           </TableRow>
         </TableHeader>
         <TableBody>
-<<<<<<< HEAD
           {data.map((item) => (
-=======
-          {data?.map((item) => (
->>>>>>> origin/main
             <TableRow key={item._id}>
               <TableCell className="font-medium">
                 <User name={item.name} familyname={item.familyname} email={item.email} />

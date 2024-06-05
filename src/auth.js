@@ -23,7 +23,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               access_token: user.token,
             };
         }
-
         return null;
       },
     }),
