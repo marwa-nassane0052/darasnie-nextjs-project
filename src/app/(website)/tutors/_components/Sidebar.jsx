@@ -149,8 +149,8 @@ export default function Sidebar() {
       label: "math",
     },
     {
-      id: "physique",
-      label: "physique",
+      id: "physics",
+      label: "physics",
     },
     {
       id: "arabe",

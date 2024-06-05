@@ -124,6 +124,18 @@ export const getSessionFillter=async(body) =>{
     const res=await _axios.post(`http://localhost:3006/group-container/getgc`,body)
     console.log(res.data)
     return res.data
+
+  }catch(err){
+    console.log(err)
+  }
+}
+
+
+export const getAllTheGroupOfSession=async(idGC) =>{
+  try{
+    const res=await _axios.get(`http://localhost:3002/session/sessiongroups/${idGC}`)
+    console.log(res.data)
+    return res.data
   }catch(err){
     console.log(err)
   }

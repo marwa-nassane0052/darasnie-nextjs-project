@@ -101,7 +101,7 @@ export default function page() {
       <AvatarImage src={session.image} alt="profile image" />
       <AvatarFallback>SC</AvatarFallback>
     </Avatar>
-    <p className="inline-block mx-3 font-semibold	text-base	">{session.prof}</p>
+    <p className="inline-block mx-3 font-semibold	text-base	">{session.name} {session.familyname}</p>
     
   </CardTitle>
   <CardDescription className="">  
@@ -111,27 +111,27 @@ export default function page() {
 
             <CardContent>
               <p>
-                <strong>Niveau:</strong> <span>{session.niveau}</span>
+                <strong>Niveau:</strong> <span>{session.groupContainers.level}</span>
               </p>
               <p>
-                <strong>Annee:</strong> <span>{session.annee}</span>
+                <strong>Annee:</strong> <span>{session.groupContainers.year}</span>
               </p>
               <p>
-                <strong>Specialite:</strong> <span>{session.Specialite}</span>
-              </p>
-              
-              <p>
-                <strong>Module:</strong> <span>{session.moduleName}</span>
+                <strong>Specialite:</strong> <span>{session.groupContainers.speciality}</span>
               </p>
               
               <p>
-                <strong>Tarif:</strong> <span>{session.tarif} da</span>
+                <strong>Module:</strong> <span>{session.groupContainers.moduleName}</span>
+              </p>
+              
+              <p>
+                <strong>Tarif:</strong> <span>{session.groupContainers.price} da</span>
               </p>
             </CardContent>
             <CardFooter>
            
               <Button asChild className="ml-auto">
-                <Link href={`/tutors/${session.id}`}>See more details</Link>
+                <Link href={`/tutors/${session.groupContainers.croupContainerId}/${session.name}${session.familyname}/${session.email}`}>See more details</Link>
               </Button>
             </CardFooter>
           </Card>

@@ -10,7 +10,7 @@ import { Card } from "antd";
 import CalendarComponent from "@/components/Calendar";
 import { auth } from "@/auth";
 import { useState,useEffect} from "react";
-import LoginUser from '@/app/(website)/tutors/_components/Sidebar'
+import { fetchGroupsData } from "../../../fetch";
 const events = [
   {
     start: moment().toDate(),
@@ -18,7 +18,6 @@ const events = [
     title: "Session ",
   },
 ];
-
 const groups = [
   {
     id: "1",
@@ -47,14 +46,11 @@ const groups = [
 ];
 
 export default async function page({ params }) {
-  const [selectedData, setSelectedData] = useState([]);
-  useEffect(() => {
-    setSelectedData(LoginUser())
-    console.log(selectedData)
-  },[]);
+ 
+ 
+  let session=await auth()
 
 
-  let session = await auth();
   return (
     <div>
       <div className="flex justify-between items-center"></div>
@@ -67,8 +63,8 @@ export default async function page({ params }) {
           <AvatarFallback>SC</AvatarFallback>
         </Avatar>
         <div className="items-center">
-          <h2 className="font-semibold text-lg">Yahiaoui Meriem</h2>
-          <p className="px-2 text-xs font-light">m.yahiaoui@esi-sba.dz</p>
+          <h2 className="font-semibold text-lg">{params.name}</h2>
+          <p className="px-2 text-xs font-light">{params.email}</p>
         </div>
       </div>
       <br />
@@ -84,9 +80,9 @@ export default async function page({ params }) {
       <br />
       <br />
       <div className="flex px-7">
-        <Tabs defaultValue={`group${groups[0].id}`}>
+        <Tabs defaultValue={`group${groups?.[0].id}`}>
           <TabsList>
-            {groups.map(({ id, group }) => (
+            {groups?.map(({ id, group }) => (
               <TabsTrigger
                 className="px-16 text-center"
                 value={`group${id}`}
