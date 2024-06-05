@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/form";
 import { useState } from "react";
 import { CreateSessionCem,CreateSessionLycee } from "@/actions/client/groups";
+import { revalidatePath } from "next/cache";
 const formSchema = z
   .object({
     moduleName: z.string().min(2).max(50),
@@ -75,11 +76,13 @@ export default function AddSessionDialog({ children }) {
     try{
       if(values.level==="cem"){
         CreateSessionCem(values)
-        
+        revalidatePath('d/teacher/sessions')
+
 
       }else{
         CreateSessionLycee(values)
-        
+        revalidatePath('d/teacher/sessions')
+
       }
       toast({
         title: "session created",

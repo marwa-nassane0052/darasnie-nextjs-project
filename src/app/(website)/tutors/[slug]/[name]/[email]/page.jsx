@@ -1,4 +1,3 @@
-"use client"
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,8 +8,8 @@ import moment from "moment";
 import { Card } from "antd";
 import CalendarComponent from "@/components/Calendar";
 import { auth } from "@/auth";
-import { useState,useEffect} from "react";
-import { fetchGroupsData } from "../../../fetch";
+import { getAllTheGroupOfSession } from "@/actions/client/groups";
+
 const events = [
   {
     start: moment().toDate(),
@@ -44,12 +43,25 @@ const groups = [
     deadline: "13 Octobre 2024",
   },
 ];
+const transformStartingDates = (startingDates) => {
+  return startingDates.map((date) => ({
+    start: moment(date).toDate(),
+    end: moment(date).add(1, "days").toDate(),
+    title: "Session",
+  }));
+};
+
 
 export default async function page({ params }) {
  
  
   let session=await auth()
 
+
+  const responseData = await getAllTheGroupOfSession(params.slug);
+   
+ 
+    
 
   return (
     <div>
@@ -80,29 +92,29 @@ export default async function page({ params }) {
       <br />
       <br />
       <div className="flex px-7">
-        <Tabs defaultValue={`group${groups?.[0].id}`}>
+        <Tabs defaultValue={`group${responseData?.[0].id}`}>
           <TabsList>
-            {groups?.map(({ id, group }) => (
+            {responseData?.map((e) => (
               <TabsTrigger
                 className="px-16 text-center"
-                value={`group${id}`}
-                key={id}
+                value={`group${e._id}`}
+                key={e._id}
               >
-                {group}
+                {e.groupName}
               </TabsTrigger>
             ))}
           </TabsList>
-          {groups.map((item) => (
-            <TabsContent value={`group${item.id}`} key={item.id}>
+          {responseData?.map((item) => (
+            <TabsContent value={`group${item._id}`} key={item.id}>
               <div className="grid grid-cols-8 gap-4 bg-white p-6 rounded">
                 <div className="col-span-6">
-                  <CalendarComponent events={events} />
+                  <CalendarComponent events={transformStartingDates(item.startingDates)}  />
                 </div>
                 <div className="col-span-2">
                   <Card className="space-y-3 bg-slate-50">
                     <div className="flex gap-2 items-center flex-wrap">
                       <h2 className="font-bold text-sm">Deadline:</h2>
-                      <p>{item.deadline}</p>
+                      <p>{item.deadlineDate}</p>
                     </div>
                     <br />
                     <Button asChild className="flex justify-center">

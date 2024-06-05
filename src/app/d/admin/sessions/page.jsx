@@ -102,7 +102,7 @@ export default function page() {
                       : item.sessionInfo.valide === false && "text-red-400"
                   }
                 >
-                 {item.sessionInfo.valide === true ? "accepted" : "refused"} 
+                 {item.sessionInfo.valide === true ? "accepted" : "en attente"} 
                 </span>
               </TableCell>
               <TableCell className="text-right space-x-2">

@@ -4,8 +4,8 @@ import axios from "axios";
 import { cookies } from "next/headers";
 import _axios from "@/lib/axios-config";
 import { auth } from "@/auth";
+import { error } from "console";
 
-const cookieStore = cookies();
 
 //create sesson
 //ms-group
@@ -65,7 +65,6 @@ export const CreateSessionCem=async(body) =>{
   //create a group
   export const addGroup=async(body,idGC) =>{
     try{
-      const token=cookieStore.get('authjs.session-token')
 
       const res=await _axios.post(`http://localhost:3002/group/createGroup/${idGC}`,body)
       return res.data
@@ -107,11 +106,7 @@ export const CreateSessionCem=async(body) =>{
  //validate session
  export const validateSession=async(idGC) =>{
   try{
-    const res=await axios.post(`http://localhost:3002/session/validateGroupContainer/${idGC}`,{
-      headers:{
-        Authorization:token.value
-      }
-    })
+    const res=await axios.post(`http://localhost:3002/session/validateGroupContainer/${idGC}`)
     console.log(res.data)
     return res.data
   }catch(err){
@@ -137,7 +132,7 @@ export const getAllTheGroupOfSession=async(idGC) =>{
     console.log(res.data)
     return res.data
   }catch(err){
-    console.log(err)
+    console.log(error.message)
   }
 }
 

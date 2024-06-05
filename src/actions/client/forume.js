@@ -51,8 +51,7 @@ export const getForumeBYIdSession=async(idS) =>{
 
   export const addComment=async(idP,body) =>{
     try{
-      const token=cookieStore.get('userToken')
-      console.log(token)
+    
       const res=await _axios.post(`http://localhost:3030/forum/createcomments/${idP}`,body)
       return res.data
     }catch(err){

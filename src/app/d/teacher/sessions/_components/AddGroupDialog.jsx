@@ -109,6 +109,7 @@ useEffect(() => {
     window.alert('tu doit entre des date dans la même semaine')
   }
     addGroup(data,idGC)
+    revalidatePath(`d/teacher/sessions/${idGC}`)
     toast({
       title: "grou created Successful",
       description: "from now this group will be available for student",
