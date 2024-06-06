@@ -1,4 +1,4 @@
-import React from "react";
+"use client"
 import {
   Table,
   TableBody,
@@ -14,41 +14,44 @@ import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { FaCheck, FaLink } from "react-icons/fa";
 import { LuTrash2 } from "react-icons/lu";
+import { getAllProf, validateProf } from "@/actions/client/auth";
+import { useState, useEffect } from "react";
 
-const users = [
-  {
-    id: "1",
-    image: "https://api.dicebear.com/8.x/lorelei/svg?seed=Harley&flip=true",
-    name: "Meriem",
-    familyname: "Yahiaoui",
-    email: "m.yahiaoui@esi-sba.dz",
+export default function Page() {
+  const [profs, setProfs] = useState([]);
 
-    phone: "0666235548",
-    cv: "https://www.sbs.ox.ac.uk/sites/default/files/2019-01/cv-template.pdf",
-  },
-  {
-    id: "2",
-    image: "https://api.dicebear.com/8.x/lorelei/svg?seed=Meriem&flip=true",
-    name: "Meriem",
-    familyname: "Yahiaoui",
-    email: "m.yahiaoui@esi-sba.dz",
+  useEffect(() => {
+    const fetchDataFromApi = async () => {
+      try {
+        const response = await getAllProf();
+        if (response.success) {
+          setProfs(response.data);
+        } else {
+          console.error(response.data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-    phone: "0666235548",
-    cv: "https://www.sbs.ox.ac.uk/sites/default/files/2019-01/cv-template.pdf",
-  },
-  {
-    id: "3",
-    image: "https://api.dicebear.com/8.x/lorelei/svg?seed=Sarah&flip=true",
-    name: "Meriem",
-    familyname: "Yahiaoui",
-    email: "m.yahiaoui@esi-sba.dz",
+    fetchDataFromApi();
+  }, []);
 
-    phone: "0666235548",
-    cv: "https://www.sbs.ox.ac.uk/sites/default/files/2019-01/cv-template.pdf",
-  },
-];
+  async function onSubmit(idP) {
+    try {
+      await validateProf(idP);
+      // Refresh the list of professors after validation
+      const updatedResponse = await getAllProf();
+      if (updatedResponse.success) {
+        setProfs(updatedResponse.data);
+      } else {
+        console.error(updatedResponse.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
-export default function page() {
   return (
     <div>
       <h1 className="font-bold text-xl mb-8">Liste des Inscriptions</h1>
@@ -63,11 +66,12 @@ export default function page() {
             <TableHead>Email</TableHead>
             <TableHead>Telephone</TableHead>
             <TableHead>CV</TableHead>
+            <TableHead>Statut</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {users.map((item) => (
+          {profs?.map((item) => (
             <TableRow key={item.id}>
               <TableCell className="font-medium">
                 <Avatar className="h-[42px] w-[42px]">
@@ -80,17 +84,38 @@ export default function page() {
               <TableCell>{item.email}</TableCell>
               <TableCell>{item.phone}</TableCell>
               <TableCell>
-                <Link
-                  href={item.cv}
-                  target="_blank"
-                  rel="noreferer"
-                  className="flex gap-2 text-blue items-center"
+                {item.isValid ? (
+                  <Link
+                    href={item.cv}
+                    target="_blank"
+                    rel="noreferer"
+                    className="flex gap-2 text-blue items-center"
+                  >
+                    <FaLink /> Lire le document
+                  </Link>
+                ) : (
+                  <span className="flex gap-2 text-gray-500 items-center">
+                    <FaLink /> Non disponible
+                  </span>
+                )}
+              </TableCell>
+              <TableCell>
+                <span
+                  className={
+                    item.user.isActive === true
+                      ? "text-green-400"
+                      : item.user.isActive === false && "text-red-400"
+                  }
                 >
-                  <FaLink /> Lire le document
-                </Link>
+                  {item.user.isActive === true ? "accepted" : "en attente"}
+                </span>
               </TableCell>
               <TableCell className="text-right space-x-2">
-                <Button size="icon" className="bg-green-500 hover:bg-green-600">
+                <Button
+                  size="icon"
+                  className="bg-green-500 hover:bg-green-600"
+                  onClick={() => onSubmit(item.user._id)}
+                >
                   <FaCheck />
                 </Button>
                 <Button size="icon" variant="destructive">

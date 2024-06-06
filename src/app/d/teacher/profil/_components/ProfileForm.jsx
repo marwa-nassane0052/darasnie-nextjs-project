@@ -13,8 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
-import { getProfInfo } from "@/actions/client/auth";
-
+import { getUserInfo } from "@/actions/client/groups";
 const formSchema = z
   .object({
     name: z.string().min(2).max(50),
@@ -36,9 +35,7 @@ const formSchema = z
   });
 
 export default function ProfileForm() {
-
-  
-
+  const [data,setData]=useState()
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -51,6 +48,23 @@ export default function ProfileForm() {
     },
   });
 
+  useEffect(() => {
+    const fetchDataFromApi = async () => {
+      try {
+        const response = await getUserInfo();
+        form.reset(response);
+        setData(response);
+        
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchDataFromApi();
+  }, [form]);
+  
+
+ 
   async function onSubmit(values) {}
 
   return (
@@ -71,7 +85,7 @@ export default function ProfileForm() {
                   Prenom<span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
-                  <Input placeholder="John" {...field} />
+                  <Input placeholder={data?.name} {...field}    />
                 </FormControl>
                 <FormMessage />
               </FormItem>

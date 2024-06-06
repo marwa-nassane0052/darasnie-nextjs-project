@@ -6,16 +6,22 @@ import _axios from "@/lib/axios-config";
 import { auth } from "@/auth";
 import { error } from "console";
 
-
+import { _fetchWithToken } from "@/lib/fetch-api";
+import { _fetch } from "@/lib/fetch-api";
+import { revalidatePath, revalidateTag } from "next/cache";
 //create sesson
 //ms-group
 export const CreateSessionCem=async(body) =>{
     try{
-      const res=await _axios.post('http://localhost:3002/session/createGroupContainerCem', body)
+      const res=await _axios.post('http://localhost:3002/session/createGroupContainerCem',body)
       console.log(res.data)
       return res.data
+      
     }catch(err){
-      console.log(err.message)
+      return{
+        success:false,
+        data:err.message
+      }    
     }
   }
 
@@ -33,7 +39,8 @@ export const CreateSessionCem=async(body) =>{
   //get all group conatiner
   export const getAllGroupCOntainer=async() =>{
     try{
-      const res=await _axios.get('http://localhost:3006/group-container/getGroupcontainer')
+      let res = await _axios.get('http://localhost:3006/group-container/getGroupcontainer');
+      console.log(res.data)
       return res.data
     }catch(err){
       console.log(err)
@@ -43,6 +50,7 @@ export const CreateSessionCem=async(body) =>{
   export const getAllGroupContainerById=async(idGc) =>{
     try{
       const res=await _axios.get(`http://localhost:3006/group-container/getGroupcontainerwithId/${idGc}`)
+
       return res.data
     }catch(err){
       console.log(err)
@@ -54,9 +62,12 @@ export const CreateSessionCem=async(body) =>{
   export const getGroupContainerForProf=async() =>{
     try{
 
-      const res=await _axios.get(`http://localhost:3002/session/groupContainerForProf`)
-      console.log(res.data)
-      return res.data
+      let res = await _fetchWithToken('http://localhost:3002/session/groupContainerForProf',false,{method:"GET",next:{tags:['getsession']}});
+      res=await res.json()
+      return{
+        success:true,
+        data:res
+      }
     }catch(err){
       console.log(err)
     }
@@ -77,7 +88,7 @@ export const CreateSessionCem=async(body) =>{
   export const getGroupContainerByid=async(idGC) =>{
     try{
       const res=await _axios.get(`http://localhost:3002/session/groupContainer/${idGC}`)
-      return res.data
+
     }catch(err){
       console.log(err)
     }
@@ -136,6 +147,34 @@ export const getAllTheGroupOfSession=async(idGC) =>{
   }
 }
 
+export const getAllTheGroupOfStudent=async(idGC) =>{
+  try{
+    const res=await _axios.get(`http://localhost:3002/group/studentGroups`)
+    return res.data
+  }catch(err){
+    console.log(error.message)
+  }
+}
+
+export const getStudentPlaning=async(idGC) =>{
+  try{
+    const res=await _axios.get(`http://localhost:3002/group/studentPlaning`)
+    return res.data
+  }catch(err){
+    console.log(error.message)
+  }
+}
+
+export const getUserInfo=async(idGC) =>{
+  try{
+    const res=await _axios.get(`http://localhost:3001/auth/getInfoUser`)
+    console.log(res.data)
+    return res.data
+  }catch(err){
+    console.log(error.message)
+  }
+}
+//http://localhost:3001/auth/getInfoUser
 //
 
 

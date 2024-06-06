@@ -64,6 +64,7 @@ export default function page() {
       title: "Signin Successful",
     });
     const type = await GetUserType();
+    
     let callback = params.get("source");
     if (!callback) {
       switch (type) {

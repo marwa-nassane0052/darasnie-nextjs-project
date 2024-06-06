@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import {
   Table,
@@ -11,7 +12,8 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-
+import { getAllTheGroupOfStudent } from "@/actions/client/groups";
+import { useState,useEffect } from "react";
 const groups = [
   {
     id: "1",
@@ -37,6 +39,22 @@ const groups = [
 ];
 
 export default function page() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchDataFromApi = async () => {
+      try {
+        const responseData = await  getAllTheGroupOfStudent();
+        setData(responseData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchDataFromApi();
+  }, []); 
+
+
   return (
     <div>
       <h1 className="font-bold text-xl mb-8">Mes Groupes</h1>
@@ -53,18 +71,18 @@ export default function page() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {groups.map((item) => (
-            <TableRow key={item.id}>
-              <TableCell className="font-medium">{item.group}</TableCell>
-              <TableCell>{new Date(item.date).toDateString()}</TableCell>
-              <TableCell>{item.module}</TableCell>
-              <TableCell>{item.tarif}</TableCell>
+          {data.map((item) => (
+            <TableRow key={item.group._id}>
+              <TableCell className="font-medium">{item.group.groupName}</TableCell>
+              <TableCell>{new Date(item.group.startingDates[0]).toDateString()}</TableCell>
+              <TableCell>{item.modulename}</TableCell>
+              <TableCell>{item.price}</TableCell>
               <TableCell className="text-right space-x-2">
                 <Button variant="link" asChild>
-                  <Link href={`/d/student/groups/${item.id}/forum`}>Forum</Link>
+                  <Link href={`/d/student/groups/${item.group._id}/forum`}>Forum</Link>
                 </Button>
                 <Button variant="link" asChild>
-                  <Link href={`/d/student/groups/${item.id}/documents`}>
+                  <Link href={`/d/student/groups/${item.group._id}/documents`}>
                     Documents
                   </Link>
                 </Button>

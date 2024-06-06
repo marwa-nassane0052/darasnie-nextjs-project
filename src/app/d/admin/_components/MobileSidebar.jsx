@@ -8,6 +8,7 @@ import { MdLogout, MdWindow } from "react-icons/md";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { HiMenu } from "react-icons/hi";
 import { RiMoneyEuroBoxFill } from "react-icons/ri";
+import { handleLogout } from "@/actions/server/auth";
 
 const MENU_ITEMS = [
   {
@@ -65,14 +66,14 @@ export default function MobileSidebar() {
               ))}
             </div>
           </div>
-          <div className="w-full">
+          <form action={handleLogout} className="w-full">
             <Button
               variant="ghost"
               className="flex-row-reverse w-full justify-center gap-3"
             >
               <MdLogout size={19} /> Deconnecter
             </Button>
-          </div>
+</form>
         </aside>
       </SheetContent>
     </Sheet>

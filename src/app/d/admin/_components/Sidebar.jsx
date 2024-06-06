@@ -8,6 +8,7 @@ import { FaUsers } from "react-icons/fa";
 import { MdLogout, MdWindow } from "react-icons/md";
 import { RiMoneyEuroBoxFill } from "react-icons/ri";
 import { IoLanguage } from "react-icons/io5";
+import { handleLogout } from "@/actions/server/auth";
 
 const MENU_ITEMS = [
   {
@@ -61,14 +62,14 @@ export default function Sidebar() {
           ))}
         </div>
       </div>
-      <div className="w-full">
+      <form action={handleLogout} className="w-full">
         <Button
           variant="ghost"
           className="flex-row-reverse w-full justify-center gap-3 text-red-500"
         >
           <MdLogout size={19} /> Deconnecter
         </Button>
-      </div>
+      </form>
     </aside>
   );
 }

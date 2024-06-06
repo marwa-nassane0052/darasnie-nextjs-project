@@ -4,6 +4,9 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { getUserInfo } from "@/actions/client/groups";
+import { useState, useEffect } from "react";
+
 import {
   Form,
   FormControl,
@@ -60,6 +63,22 @@ export default function StudentProfile() {
       year: "1",
     },
   });
+  const [data,setData]=useState()
+  useEffect(() => {
+    const fetchDataFromApi = async () => {
+      try {
+        const response = await getUserInfo();
+        form.reset(response);
+        setData(response);
+        
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchDataFromApi();
+  }, [form]);
+  
 
   async function onSubmit(values) {}
 
@@ -298,6 +317,7 @@ export default function StudentProfile() {
         <FormField
           control={form.control}
           name="major"
+          disabled
           render={({ field }) => (
             <FormItem className="space-y-3">
               <FormControl>

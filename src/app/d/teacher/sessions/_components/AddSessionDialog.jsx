@@ -50,11 +50,11 @@ const formSchema = z
     speciality:z.string()
   })
 
-export default function AddSessionDialog({ children }) {
+export default function AddSessionDialog({  children, fetchData }) {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      moduleName:"",
+      moduleName:"math",
       price:null,
       sessionDuration:null,
       sessionsNumberPerWeek:null,
@@ -72,26 +72,24 @@ export default function AddSessionDialog({ children }) {
   const router=useRouter()
  
   async function onSubmit(values) {
-    console.log(values)
-    try{
-      if(values.level==="cem"){
-        CreateSessionCem(values)
-        revalidatePath('d/teacher/sessions')
-
-
-      }else{
-        CreateSessionLycee(values)
-        revalidatePath('d/teacher/sessions')
-
+    try {
+      console.log(values)
+      if (values.level === "cem") {
+        await CreateSessionCem(values);
+      } else {
+        await CreateSessionLycee(values);
       }
       toast({
-        title: "session created",
-        description: "you need to wait untile the admin validate your session",
+        title: "Session created",
+        description: "You need to wait until the admin validates your session",
       });
-    }catch(err){
-      console.log(err)
+      fetchData(); // Fetch the updated data
+      revalidatePath("d/teacher/sessions");
+    } catch (err) {
+      console.log(err);
     }
   }
+  
   return(
     <Dialog>
        <DialogTrigger asChild>{children}</DialogTrigger>
@@ -109,7 +107,22 @@ export default function AddSessionDialog({ children }) {
                 <FormItem>
                   <FormLabel> Nom de module<span className="text-red-500">*</span></FormLabel>
                   <FormControl>
-                    <Input placeholder="Nom du module" id="module" {...field} />
+                  <Select name="moduleName" id="moduleName"  onValueChange={field.onChange} defaultValue={field.value}>
+              <SelectTrigger>
+                <SelectValue placeholder="moduleName" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Module name</SelectLabel>
+                  <SelectItem value="math">Math</SelectItem>
+                  <SelectItem value="physique">Physique</SelectItem>
+                  <SelectItem value="science">Science</SelectItem>
+                  <SelectItem value="philosophie">Philosophie</SelectItem>
+                  <SelectItem value="francais">francais</SelectItem>
+                  <SelectItem value="arabe">Arabe</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
