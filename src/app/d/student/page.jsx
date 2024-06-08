@@ -1,9 +1,8 @@
 import React from "react";
+import Page from "../student/groups/page";
 
 export default function page() {
   return (
-    <div>
-      <p>Dashboard</p>
-    </div>
+      <Page></Page>
   );
 }

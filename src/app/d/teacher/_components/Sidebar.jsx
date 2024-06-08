@@ -10,15 +10,11 @@ import { RiMoneyEuroBoxFill } from "react-icons/ri";
 import { handleLogout } from "@/actions/server/auth";
 
 const MENU_ITEMS = [
-  {
-    label: "Dashboard",
-    icon: <MdWindow size={19} />,
-    href: "/d/teacher",
-  },
+
   {
     label: "Mes sessions",
     icon: <FaListAlt size={19} />,
-    href: "/d/teacher/sessions",
+    href: "/d/teacher",
   },
   {
     label: "Emploi du temps",

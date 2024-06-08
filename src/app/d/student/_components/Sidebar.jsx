@@ -9,15 +9,11 @@ import { MdLogout, MdWindow } from "react-icons/md";
 import { IoLanguage } from "react-icons/io5";
 
 const MENU_ITEMS = [
-  {
-    label: "Dashboard",
-    icon: <MdWindow size={19} />,
-    href: "/d/student",
-  },
+
   {
     label: "Mes Groupes",
     icon: <FaListAlt size={19} />,
-    href: "/d/student/groups",
+    href: "/d/student",
   },
   {
     label: "Emploi du temps",

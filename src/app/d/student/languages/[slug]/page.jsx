@@ -13,17 +13,20 @@ const DUMMY = {
 export default function page() {
   return (
     <>
-      <h1 className="font-bold text-2xl">
-        Examen de {DUMMY.subject} - Niveau {DUMMY.level}
-      </h1>
-      <div className="grid lg:grid-cols-2 gap-12 mt-8">
+      <div className="grid lg:grid-cols-2 gap-12 mt-4">
+        <h1 className="font-bold text-2xl">
+          Examen de {DUMMY.subject} - Niveau {DUMMY.level}
+        </h1>
+        <h1 className="text-xl ">
+          <strong className="text-2xl">Deadline:</strong>{" "}
+          {new Date(DUMMY.deadline).toDateString()}
+        </h1>
+      </div>
+      <div className="grid lg:grid-cols-2 gap-12 mt-4">
         <div className="w-full h-auto aspect-[21/29]">
           <iframe src={DUMMY.link} className="w-full h-full" />
         </div>
         <div className="space-y-4">
-          <p className="text-xl">
-            <strong>Deadline:</strong> {new Date(DUMMY.deadline).toDateString()}
-          </p>
           <form className="space-y-3">
             <div className="relative border border-black border-dashed rounded-lg w-full py-16">
               <Input
