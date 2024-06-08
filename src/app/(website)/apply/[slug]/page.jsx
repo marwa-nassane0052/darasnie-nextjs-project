@@ -6,6 +6,7 @@ import { z } from "zod";
 import { useFormState, useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import {FlipCard} from "@/components/FlipCard";
 import {
   Form,
   FormControl,
@@ -66,6 +67,7 @@ export default function page() {
           <SubmitButton />
         </form>
       </Form>
+      <FlipCard />
     </div>
   );
 }
