@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -32,19 +32,22 @@ export default function Page() {
 
   return (
     <div>
-      <h1 className="font-bold text-xl mb-5">Mes Sessions</h1>
-      <hr />
-      <div className="mt-6 grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className=" flex justify-between items-center ">
+        <h1 className="font-bold text-xl mb-5">Mes Sessions</h1>
         <AddSessionDialog fetchData={fetchData}>
           <Button
             variant="ghost"
-            className="w-full h-full border shadow border-dashed gap-3 bg-white"
+            className="w-[240px] h-full  shadow border-dashed border-2 border-purple-border-added gap-3 bg-white mb-5"
           >
             <FaPlus /> Add Session
           </Button>
         </AddSessionDialog>
+      </div>
+      <hr />
+      <div className="mt-6 grid md:grid-cols-2 lg:grid-cols-4 gap-80">
+        <AddSessionDialog fetchData={fetchData}></AddSessionDialog>
         {data?.map((s) => (
-          <Card key={s._id}>
+          <Card key={s._id} className=" w-[300px] transition ease-in-out delay-150  hover:-translate-y-1 hover:drop-shadow-2xl duration-300" opacity-25={!s.valide} >
             <CardHeader>
               <CardTitle>Module: {s.moduleName}</CardTitle>
               <CardDescription>
@@ -52,25 +55,26 @@ export default function Page() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p>
-                <strong>Tarif:</strong> <span>{s.price}</span>
+              <p >
+                <strong >Tarif:</strong> <span className="text-gray-400">{s.price}DA</span>
               </p>
               <p>
-                <strong>Duree:</strong> <span>{s.sessionDuration}</span>
+                <strong>Duree:</strong> <span className="text-gray-400">{s.sessionDuration}</span>
               </p>
               <p>
-                <strong>Groupes:</strong> <span> {s.groups.length} groupes</span>
+                <strong>Groupes:</strong>{" "}
+                <span className="text-gray-400"> {s.groups.length} groupes</span>
               </p>
               <p>
-                <strong>Nombre des seances:</strong> <span>{s.sessionsNumberPerWeek}</span>
+                <strong>Nombre des seances:</strong>{" "}
+                <span className="text-gray-400">{s.sessionsNumberPerWeek}</span>
               </p>
             </CardContent>
             <CardFooter>
               <Button variant="link" disabled={!s.valide} className="ml-auto">
-                <Link href={`/d/teacher/sessions/${s._id}/forum`}>
-                  Forum
-                </Link>
+                <Link href={`/d/teacher/sessions/${s._id}/forum`}>Forum</Link>
               </Button>
+              
               <Button disabled={!s.valide}>
                 <Link href={`/d/teacher/sessions/${s._id}`}>Details</Link>
               </Button>

@@ -90,7 +90,7 @@ export default function ServicesSection() {
             </ul>
           </div>
           <div>
-            <Button className=" text-white hover:bg-gray-600  rounded-3xl w-60 h-10 bg-black  space-x-8 ">
+            <Button className=" text-white   rounded-3xl w-60 h-10 bg-black  space-x-8 ">
               <span>Devenez un professeur</span>
               <ArrowRightIcon className="text-white" />
             </Button>

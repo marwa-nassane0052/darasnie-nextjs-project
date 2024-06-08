@@ -21,7 +21,7 @@ const languages = [
   },
   {
     id: "2",
-    label: "Francais",
+    label: "Francais",  
     level: "B2",
     subject: "Vocabulaire",
   },

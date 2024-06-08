@@ -20,7 +20,6 @@ const payments = [
     },
     niveau: "Lycee",
     tarif: "9000 DA",
-    status: "Paie",
   },
   {
     id: "2",
@@ -31,7 +30,6 @@ const payments = [
     },
     niveau: "Cem",
     tarif: "4000 DA",
-    status: "Paie",
   },
   {
     id: "3",
@@ -42,7 +40,6 @@ const payments = [
     },
     niveau: "Cem",
     tarif: "6000 DA",
-    status: "Non Paie",
   },
 ];
 
@@ -58,7 +55,6 @@ export default function page() {
             <TableHead>Enseignant</TableHead>
             <TableHead>Niveau</TableHead>
             <TableHead>Tarif</TableHead>
-            <TableHead>Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -69,17 +65,7 @@ export default function page() {
               </TableCell>
               <TableCell>{item.niveau}</TableCell>
               <TableCell>{item.tarif}</TableCell>
-              <TableCell>
-                <span
-                  className={
-                    item.status == "Paie"
-                      ? "text-green-400"
-                      : item.status == "Non Paie" && "text-red-400"
-                  }
-                >
-                  {item.status}
-                </span>
-              </TableCell>
+             
             </TableRow>
           ))}
         </TableBody>

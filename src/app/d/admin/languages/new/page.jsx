@@ -28,8 +28,9 @@ import { useState } from "react";
 
 const LEVELS = ["A1", "A2", "B1", "B2"];
 const SUBJECTS = ["Grammaire", "Vocabulaire"];
+const LANGUAGES = ["Francais", "Arabe", "Anglais"];
 
-export default function page() {
+export default function Page() {
   const form = useForm({
     defaultValues: {
       language: "",
@@ -70,7 +71,27 @@ export default function page() {
               <FormItem>
                 <FormLabel>Langue</FormLabel>
                 <FormControl>
-                  <Input placeholder="Francais" {...field} />
+                  <Select
+                    name="language"
+                    id="language"
+                    {...field}
+                    value={field.value}
+                    onValueChange={field.onChange}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Langue" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Langue</SelectLabel>
+                        {LANGUAGES.map((language) => (
+                          <SelectItem key={language} value={language}>
+                            {language}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -96,9 +117,9 @@ export default function page() {
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Sujet</SelectLabel>
-                        {SUBJECTS.map((level) => (
-                          <SelectItem key={level} value={level}>
-                            {level}
+                        {SUBJECTS.map((subject) => (
+                          <SelectItem key={subject} value={subject}>
+                            {subject}
                           </SelectItem>
                         ))}
                       </SelectGroup>

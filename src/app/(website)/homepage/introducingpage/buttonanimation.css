@@ -1,9 +1,0 @@
-
-
-.button-shrink {
-  transition: transform 0.2s ease;
-}
-
-.button-shrink:active {
-  transform: scale(0.5);
-}
