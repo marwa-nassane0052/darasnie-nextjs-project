@@ -4,6 +4,7 @@ import SearchInput from "./SearchInput";
 import Link from "next/link";
 import MobileSidebar from "./MobileSidebar";
 
+import { NotificationPopover } from "./NotificationPopover";
 export default function DashboardHeader() {
   return (
     <header className="h-[60px] border-b flex gap-5 justify-between items-center px-5 bg-white">
@@ -12,6 +13,9 @@ export default function DashboardHeader() {
           <MobileSidebar />
         </div>
         <SearchInput />
+
+        <NotificationPopover />
+       
       </div>
       <Button variant="ghost" className="relative h-8 w-8 rounded-full" asChild>
         <Link href="/d/student/profil">
