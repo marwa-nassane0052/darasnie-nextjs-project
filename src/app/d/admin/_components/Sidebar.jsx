@@ -9,7 +9,7 @@ import { MdLogout, MdWindow } from "react-icons/md";
 import { RiMoneyEuroBoxFill } from "react-icons/ri";
 import { IoLanguage } from "react-icons/io5";
 import { handleLogout } from "@/actions/server/auth";
-
+import Image from "next/image";
 const MENU_ITEMS = [
   {
     label: "Dashboard",
@@ -43,7 +43,9 @@ export default function Sidebar() {
   return (
     <aside className="hidden lg:flex px-5 h-screen border-r py-16 flex-col justify-between items-center">
       <div className="space-y-12">
-        <p className="text-lg font-bold text-center">LOGO</p>
+      <div className="text-lg font-bold flex justify-center items-center">
+          <Image src="/daresni.png" width={50} height={50} alt="Daresni Logo" />
+        </div>
         <div className="grid gap-3">
           {MENU_ITEMS.map((item) => (
             <div key={item.href} className="w-full">

@@ -1,23 +1,30 @@
+
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import daresni from "../../../public/daresni.png";
+import Image from "next/image";
 
 export default function RootLayout({ children }) {
+
   return (
     <div>
       <div className="min-h-screen">
-        <nav className="py-4 border-b-2 relative z-50 bg-white">
+        <nav className="py-4 px-14 border-b-2 relative z-50 bg-white">
           <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 items-center">
+            <Link href={"/"}>
             <div className="flex justify-start  md:col-span-1">
-              <div className="bg-gray-400 rounded-full w-8 h-8" />
+             <Image src="/daresni.png" width="50" height="50"></Image>
             </div>
+            </Link>
             <div className="flex justify-center items-center text-sm  md:justify-start space-x-8 font-bold md:col-span-1 ">
               <Link className="hover:text-indigo-800" href="/tutors">
                 Nos profs
               </Link>
-              <Link className="hover:text-indigo-800" href="/become-tutor">
+              
+              <Link href={"/register/prof"} className="hover:text-indigo-800">
                 Devenez un prof
               </Link>
-              <Link className="hover:text-indigo-800" href="/about-us">
+              <Link href={"/about"} className="hover:text-indigo-800" >
                 À propos de nous
               </Link>
             </div>
