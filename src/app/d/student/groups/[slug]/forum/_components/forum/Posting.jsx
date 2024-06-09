@@ -1,3 +1,4 @@
+"use client"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,8 +10,67 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useToast } from "@/components/ui/use-toast";
 
-export default function Posting() {
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { addComment } from "@/actions/client/forume";
+
+import { useEffect,useState } from "react";
+import { getAllcommentOfPost } from "@/actions/client/forume";
+import { AwardIcon } from "lucide-react";
+const formSchema = z.object({
+  content:z.string(),
+});
+export default function Posting({name,role,titre,text,createdAT,img,idP}) {
+  const [data, setData] = useState([]);
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      content: "",//file
+    },
+  });
+  useEffect(() => {
+    const fetchDataFromApi = async () => {
+      try {
+        const responseData = await getAllcommentOfPost(idP);
+        setData(responseData);   
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchDataFromApi();
+  }, []); 
+  const { toast } = useToast();
+
+
+  async function onSubmit(e){
+    e.preventDefault();
+    try{
+      const values=form.getValues()
+      await addComment(idP,values)
+      toast({
+        title: "commentaire ajouté avec succès",
+        description: "  ",
+      });
+      form.reset(); 
+      const responseData = await getAllcommentOfPost(idP);
+      setData(responseData);   
+    }catch(e){
+      console.log(e)
+    }
+  }
+  
   return (
     <div className="bg-white rounded-xl p-5 space-y-4">
       <div className="flex justify-between">
@@ -23,12 +83,12 @@ export default function Posting() {
             <AvatarFallback>SC</AvatarFallback>
           </Avatar>
           <div>
-            <p className="font-bold text-sm">Sarah Touahi</p>
-            <p className="text-xs text-gray-500">Prof de math</p>
+            <p className="font-bold text-sm">{name}</p>
+            <p className="text-xs text-gray-500  r"> {role}</p>
           </div>
         </div>
         <div>
-          <p className="text-sm">2 jours</p>
+          <p className="text-sm">{createdAT}</p>
         </div>
       </div>
       <div className="border p-4 flex items-center">
@@ -36,24 +96,47 @@ export default function Posting() {
           <div className="min-w-[100px] h-[114px] relative">
             <Image
               alt="post image"
-              src="https://aclanthology.org/thumb/D17-1314.jpg"
+              src={img}
               fill
             />
           </div>
           <div className="space-y-2">
-            <p className="font-bold text-sm">
-              corrige type d&apos;exercice de probabilite
+            <p className="font-bold text-sm  t">
+              {titre}
             </p>
-            <p className="text-xs text-gray-500">
-              loremLoren ccnsmcn smcssc csbcshjcdn lmxsckscbsicshjksnlcks
-              cnskcnjknsdnn nnnnnnnnnnnnnn nnnn nnnnmnskd,cmslkmlds.
+            <p className="text-xs text-gray-500 ">
+              {text}
             </p>
           </div>
         </div>
       </div>
-      <form className="flex gap-2">
-        <Input placeholder="Add a comment" /> <Button>Commenter</Button>
+     <Form {...form}>
+     <form className="flex">
+        <div className="flex justify-between items-center space gap-2">
+        <FormField
+          control={form.control}
+          name="content"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input
+                  type="text"
+                  placeholder="Ajouter commontaire"
+                  {...field}
+                  
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+                <Button  onClick={onSubmit} >Commenter</Button>
+
+        </div>
+      
       </form>
+     </Form>
+
       <Dialog>
         <DialogTrigger className="w-full gap-2 flex items-center justify-center border py-2 rounded hover:bg-gray-100">
           <MdOutlineInsertComment /> 11 personnes ont commentées cette
@@ -61,25 +144,24 @@ export default function Posting() {
         </DialogTrigger>
         <DialogContent className="py-4">
           <DialogHeader>Commentaires</DialogHeader>
-          <Comment
-            name="Sarah Touahi"
-            date="13 Mars 2024"
-            image="https://api.dicebear.com/8.x/lorelei/svg?seed=Harley&flip=true"
-            text="Il y a un erreur dans la ligne 3"
-          />
-          <Comment
-            name="Sarah Touahi"
-            date="13 Mars 2024"
-            image="https://api.dicebear.com/8.x/lorelei/svg?seed=Harley&flip=true"
-            text="Il y a un erreur dans la ligne 3"
-          />
+          {data?.map((s)=>{
+            return(
+              <Comment
+              author_full_name={s?.author_full_name}
+              createdAt={s?.createdAT}
+              content={s?.content}
+              />
+            )
+          })}
+          
+          
         </DialogContent>
       </Dialog>
     </div>
   );
 }
 
-const Comment = ({ name, date, text, image }) => {
+const Comment = ({ author_full_name, createdAt, content, image }) => {
   return (
     <div className="flex justify-between">
       <div className="flex items-center gap-4">
@@ -88,12 +170,12 @@ const Comment = ({ name, date, text, image }) => {
           <AvatarFallback>SC</AvatarFallback>
         </Avatar>
         <div>
-          <p className="font-bold text-sm">{name}</p>
-          <p className="text-xs text-gray-500">{text}</p>
+          <p className="font-bold text-sm">{author_full_name}</p>
+          <p className="text-xs text-gray-500">{content}</p>
         </div>
       </div>
       <div>
-        <p className="text-xs">{date}</p>
+        <p className="text-xs">{createdAt}</p>
       </div>
     </div>
   );

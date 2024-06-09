@@ -3,7 +3,9 @@ import React from "react";
 import Sidebar from "../../_components/Sidebar";
 import MarkdownContent from "../../_components/MarkdownContent";
 import Buttons from "../../_components/Buttons";
-
+import { AwardIcon } from "lucide-react";
+import { getStepsContet } from "@/actions/client/groups";
+import { getSTeps } from "@/actions/client/groups";
 const DUMMY_DATA = {
   steps: [
     {
@@ -36,7 +38,8 @@ const getSteps = (steps, slug) => {
   }));
 };
 
-export default function page({ params }) {
+export default  async function page({ params }) {
+  const data=await getStepsContet(params.slug,params.step)
   return (
     <main className="flex">
       <Sidebar
@@ -45,7 +48,10 @@ export default function page({ params }) {
       />
       <ScrollArea className="flex-grow flex flex-col h-screen bg-[#e4d9ff26]">
         <div className="flex-grow p-8 container">
-          <MarkdownContent step={DUMMY_DATA.current} />
+           <h1>{data?.title}</h1> 
+           <p>{data?.content}</p> 
+
+
           <Buttons
             step={parseInt(params.step)}
             slug={params.slug}

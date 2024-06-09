@@ -19,8 +19,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import AddGroupDialog from "../_components/AddGroupDialog";
-import { getGroupContainerByid,getGroupsByGroupContainerId } from "@/actions/client/groups";
-import { useEffect,useState } from "react";
+import { getGroupContainerByid, getGroupsByGroupContainerId } from "@/actions/client/groups";
+import { useEffect, useState } from "react";
 
 
 const groupsFixed = [
@@ -44,31 +44,29 @@ const groupsFixed = [
   },
 ];
 
-export default function page({params}) {
-  const groupContainerId=params.slug
+export default function page({ params }) {
+  const groupContainerId = params.slug
   const [data, setData] = useState([]);
   const [groups, setGroups] = useState([]);
 
+
+  const fetchData = async () => {
+    try {
+      const responseData = await getGroupContainerByid(groupContainerId);
+      setData(responseData);
+      const responseData2 = await getGroupsByGroupContainerId(groupContainerId);
+      setGroups(responseData2)
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
-    const fetchDataFromApi = async () => {
-      try {
-        const responseData = await getGroupContainerByid(groupContainerId);
-        setData(responseData);
-        const responseData2 = await getGroupsByGroupContainerId(groupContainerId);
-        setGroups(responseData2)
-        
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchDataFromApi();
-  }, [groupContainerId]);   
+    fetchData();
+  }, [groupContainerId]);
 
 
-  
 
-  
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -81,11 +79,11 @@ export default function page({params}) {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Session  {data.moduleName} {data.sessionsNumberPerWeek}  </BreadcrumbPage>
+              <BreadcrumbPage>Session  {data?.moduleName} {data?.sessionsNumberPerWeek}  </BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <AddGroupDialog nb={data.sessionsNumberPerWeek} idGC={data._id}>
+        <AddGroupDialog nb={data?.sessionsNumberPerWeek} idGC={data?._id} fetchData={fetchData}>
           <Button>Cree un groupe</Button>
         </AddGroupDialog>
       </div>
@@ -101,7 +99,7 @@ export default function page({params}) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {groups.map((item) => (
+          {groups?.map((item) => (
             <TableRow key={item.id}>
               <TableCell className="font-medium">{item.groupName}</TableCell>
               <TableCell>{new Date(item.startingDates[0]).toDateString()}</TableCell>
@@ -114,8 +112,13 @@ export default function page({params}) {
               </TableCell>
               <TableCell className="text-right space-x-2">
                 <Button variant="link" asChild>
-                  <Link href={`/d/teacher/sessions/${params.slug}/${item.id}`}>
+                  <Link href={`/d/teacher/sessions/${params.slug}/${item._id}/${item.groupName}`}>
                     Liste des etudiants
+                  </Link>
+                </Button>
+                <Button variant="link" asChild className="text-right space-x-2">
+                  <Link href={`/d/teacher/groups/${item._id}`}>
+                    Documents
                   </Link>
                 </Button>
                 <Button>Joindre les cours</Button>

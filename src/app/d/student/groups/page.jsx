@@ -71,7 +71,7 @@ export default function page() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map((item) => (
+          {data?.map((item) => (
             <TableRow key={item.group._id}>
               <TableCell className="font-medium">{item.group.groupName}</TableCell>
               <TableCell>{new Date(item.group.startingDates[0]).toDateString()}</TableCell>
@@ -79,7 +79,7 @@ export default function page() {
               <TableCell>{item.price}</TableCell>
               <TableCell className="text-right space-x-2">
                 <Button variant="link" asChild>
-                  <Link href={`/d/student/groups/${item.group._id}/forum`}>Forum</Link>
+                  <Link href={`/d/student/groups/${item.idGC}/forum`}>Forum</Link>
                 </Button>
                 <Button variant="link" asChild>
                   <Link href={`/d/student/groups/${item.group._id}/documents`}>

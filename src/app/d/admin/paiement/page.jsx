@@ -1,3 +1,5 @@
+"use client"
+
 import React from "react";
 import {
   Table,
@@ -9,7 +11,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-
+import { useState,useEffect } from "react";
+import { getAllPayment } from "@/actions/client/groups";
 const payments = [
   {
     id: "1",
@@ -44,6 +47,22 @@ const payments = [
 ];
 
 export default function page() {
+
+
+  const [data,setData]=useState([])
+  useEffect(() => {
+    const fetchDataFromApi = async () => {
+      try {
+        const responseData = await getAllPayment();
+        setData(responseData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchDataFromApi();
+  }, []);
+
   return (
     <div>
       <h1 className="font-bold text-xl mb-8">Liste des paiements</h1>
@@ -58,10 +77,10 @@ export default function page() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {payments.map((item) => (
+          {data.map((item) => (
             <TableRow key={item.id}>
               <TableCell className="font-medium">
-                <User {...item.user} />
+                <User name={item.name} email={item.email} fm={item.familyname} />
               </TableCell>
               <TableCell>{item.niveau}</TableCell>
               <TableCell>{item.tarif}</TableCell>
@@ -74,7 +93,7 @@ export default function page() {
   );
 }
 
-const User = ({ name, email, image }) => {
+const User = ({ name, email, image,fm }) => {
   return (
     <div className="flex items-center gap-4">
       <Avatar className="h-[42px] w-[42px]">
@@ -82,7 +101,7 @@ const User = ({ name, email, image }) => {
         <AvatarFallback>SC</AvatarFallback>
       </Avatar>
       <div>
-        <p className="font-bold text-sm">{name}</p>
+        <p className="font-bold text-sm">{name} {fm}</p>
         <p className="text-xs text-gray-500">{email}</p>
       </div>
     </div>

@@ -1,7 +1,7 @@
 
 "use client";
 import { Button } from "@/components/ui/button";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { DatePicker } from 'antd';
 import dayjs from 'dayjs';
 import { useToast } from "@/components/ui/use-toast";
@@ -22,7 +22,7 @@ import { addGroup } from "@/actions/client/groups";
 
 
 
-export default function AddGroupDialog({ children ,nb,idGC}) {
+export default function AddGroupDialog({ children, nb, idGC,fetchData }) {
 
   const [inputFields, setInputFields] = useState([
     { date: '' }
@@ -31,16 +31,16 @@ export default function AddGroupDialog({ children ,nb,idGC}) {
     let data = [...inputFields];
     data[index][event.target.name] = event.target.value;
     setInputFields(data);
-}
+  }
 
-useEffect(() => {
-  const numberOfInputs = nb;
-  const initialData = Array.from({ length: numberOfInputs }, () => ({ date: '',}));
-  setInputFields(initialData);
-}, [nb]);
+  useEffect(() => {
+    const numberOfInputs = nb;
+    const initialData = Array.from({ length: numberOfInputs }, () => ({ date: '', }));
+    setInputFields(initialData);
+  }, [nb]);
 
   const [formData, setFormData] = useState({
-    groupeName: "",    
+    groupeName: "",
   });
 
   const [dateFinInscription, setDateFinInscription] = useState('');
@@ -58,10 +58,10 @@ useEffect(() => {
 
     setFormData({ ...formData, [name]: formattedDateString });
   };
-  const datesInSameWee=(dateArray) =>{
+  const datesInSameWee = (dateArray) => {
     if (dateArray.length === 0) {
-        // If the array is empty, return false
-        return false;
+      // If the array is empty, return false
+      return false;
     }
 
     // Get the week number and year of the first date in the array
@@ -71,54 +71,54 @@ useEffect(() => {
 
     // Check if all dates in the array have the same week number and year
     for (let i = 1; i < dateArray.length; i++) {
-        const currentDate = new Date(dateArray[i]);
-        const currentWeek = getWeekNumber(currentDate);
-        const currentYear = currentDate.getFullYear();
+      const currentDate = new Date(dateArray[i]);
+      const currentWeek = getWeekNumber(currentDate);
+      const currentYear = currentDate.getFullYear();
 
-        if (currentWeek !== referenceWeek || currentYear !== referenceYear) {
-            // If any date has a different week number or year, return false
-            return false;
-        }
+      if (currentWeek !== referenceWeek || currentYear !== referenceYear) {
+        // If any date has a different week number or year, return false
+        return false;
+      }
     }
 
     // If all dates have the same week number and year, return true
     return true;
-}
+  }
 
-  const getWeekNumber=(date)=> {
+  const getWeekNumber = (date) => {
     const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
     const millisecondsPerDay = 24 * 60 * 60 * 1000;
     const elapsedDays = (date - firstDayOfYear) / millisecondsPerDay;
     return Math.ceil((elapsedDays + firstDayOfYear.getDay() + 1) / 7);
-}
+  }
   //methide that will handel the creation of group
   const { toast } = useToast();
   const handleSubmit = (e) => {
-  e.preventDefault();
-  try{
-    const dataList = inputFields.map((input) => input.date);
+    e.preventDefault();
+    try {
+      const dataList = inputFields.map((input) => input.date);
 
-    const data={
-      groupName:formData.groupeName,
-      startingDate:dataList,
-      deadlineDate:dateFinInscription
-     }
-  if(datesInSameWee(dataList)){
-    console.log(data)
-  }else{
-    window.alert('tu doit entre des date dans la même semaine')
-  }
-    addGroup(data,idGC)
-    revalidatePath(`d/teacher/sessions/${idGC}`)
-    toast({
-      title: "grou created Successful",
-      description: "from now this group will be available for student",
-    });
+      const data = {
+        groupName: formData.groupeName,
+        startingDate: dataList,
+        deadlineDate: dateFinInscription
+      }
+      if (datesInSameWee(dataList)) {
+        console.log(data)
+      } else {
+        window.alert('tu doit entre des date dans la même semaine')
+      }
+      addGroup(data, idGC)
+      toast({
+        title: "group created",
+        description: "maintenant vous pouvez commencer à éduquer les étudiants",
+      });
+      fetchData();
 
-  }catch(err){
-    console.log(err)
-  }
-  
+    } catch (err) {
+      console.log(err)
+    }
+
   };
 
   dayjs.extend(customParseFormat);
@@ -157,7 +157,7 @@ useEffect(() => {
     };
   };
 
-  return(
+  return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -165,58 +165,58 @@ useEffect(() => {
           <DialogTitle>Cree un groupe</DialogTitle>
         </DialogHeader>
         <form>
-            <div className=" mt-4 flex flex-col  ">
-              <div className="flex flex-col ">
-                <label className= "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"> Nom de groupe<span className="text-red-500">*</span></label>
-                <input
-                  type="text"
-                  name="groupeName"
-                  placeholder="Nom de groupe"
-                  className= "flex h-10 w-full rounded-md	 border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-added focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 my-3"
-                  required
-                  value={formData.groupeName}
-                  onChange={handleChange}
-                  style={{ fontFamily: 'NATS' }}
-                />
-              </div>
-
-              <label htmlFor="debutdescours" className= "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Date début des cours<span className="text-red-500">*</span></label>
-              {inputFields.map((input, index) => {
-          return (
-            <div key={index}>
+          <div className=" mt-4 flex flex-col  ">
+            <div className="flex flex-col ">
+              <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"> Nom de groupe<span className="text-red-500">*</span></label>
               <input
-                name='date'
-                type='datetime-local'
-                value={input.name}
+                type="text"
+                name="groupeName"
+                placeholder="Nom de groupe"
+                className="flex h-10 w-full rounded-md	 border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-added focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 my-3"
+                required
+                value={formData.groupeName}
+                onChange={handleChange}
                 style={{ fontFamily: 'NATS' }}
-
-                className= "flex h-10 w-full rounded-md	 border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-added focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 my-3"
-                onChange={event => handleFormChange(index, event)}
               />
-
-              
-            
             </div>
-          
-          )
-        })}
-      <div className="flex flex-col ">
-                <label className= "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"> Nom de groupe<span className="text-red-500">*</span></label>
-                <input
-                  type='datetime-local'
-                  className= "flex h-10 w-full rounded-md	 border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-added focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 my-3"
-                  required
-                  value={dateFinInscription}
-                  onChange={handleDateFinInscriptionChange}
-                  style={{ fontFamily: 'NATS' }}
-                />
-              </div>
-              <Button className="w-full"onClick={handleSubmit} >Sauvegarder</Button>
 
-            </div>  
+            <label htmlFor="debutdescours" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Date début des cours<span className="text-red-500">*</span></label>
+            {inputFields.map((input, index) => {
+              return (
+                <div key={index}>
+                  <input
+                    name='date'
+                    type='datetime-local'
+                    value={input.name}
+                    style={{ fontFamily: 'NATS' }}
+
+                    className="flex h-10 w-full rounded-md	 border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-added focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 my-3"
+                    onChange={event => handleFormChange(index, event)}
+                  />
 
 
-          </form>   
+
+                </div>
+
+              )
+            })}
+            <div className="flex flex-col ">
+              <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"> Nom de groupe<span className="text-red-500">*</span></label>
+              <input
+                type='datetime-local'
+                className="flex h-10 w-full rounded-md	 border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-added focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 my-3"
+                required
+                value={dateFinInscription}
+                onChange={handleDateFinInscriptionChange}
+                style={{ fontFamily: 'NATS' }}
+              />
+            </div>
+            <Button className="w-full" onClick={handleSubmit} >Sauvegarder</Button>
+
+          </div>
+
+
+        </form>
 
       </DialogContent>
 
@@ -224,68 +224,68 @@ useEffect(() => {
 
   )
 }
-  /*return (
-    <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Cree un groupe</DialogTitle>
-        </DialogHeader>
-        <form className="gap-4 grid">
-          <div className="space-y-2">
-            <Label htmlFor="nom"> 
-              Nom de groupe<span className="text-red-500">*</span>
-            </Label>
-            <Input placeholder="Nom de groupe" name="nom" id="nom" 
-                  value={formData.groupeName}
-                  onChange={handleChange} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="dateFin">
-              Date de fin d’inscription<span className="text-red-500">*</span>
-            </Label>
-            <Input
-              type="date"
-              placeholder="Date de fin d’inscription"
-              name="dateFin"
-              id="dateFin"
-              disabledDate={disabledDate}
-              disabledTime={disabledDateTime}
-              showTime={{
-                defaultValue: dayjs('00:00:00', 'HH:mm:ss'),
-              }}
-              value={formData.dateFinInscription ? dayjs(formData.dateFinInscription) : null}
-              onChange={(date, dateString) => handleDateChange(date, dateString, "dateFinInscription")}
-          
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="dateInscription">
-              Date de début des cours <span className="text-red-500">*</span>
-            </Label>
-            {inputFields.map((input, index) => {
-                  return (
-                    
-            <div key={index}>
-            <Input
-              type="date"
-              placeholder="Date de début des cours "
-              name="dateInscription"
-              
-              value={input.name}
-              id="dateInscription"
-              onChange={event => handleFormChange(index, event)}
-            />
-          </div>
-            )
+/*return (
+  <Dialog>
+    <DialogTrigger asChild>{children}</DialogTrigger>
+    <DialogContent className="sm:max-w-[425px]">
+      <DialogHeader>
+        <DialogTitle>Cree un groupe</DialogTitle>
+      </DialogHeader>
+      <form className="gap-4 grid">
+        <div className="space-y-2">
+          <Label htmlFor="nom"> 
+            Nom de groupe<span className="text-red-500">*</span>
+          </Label>
+          <Input placeholder="Nom de groupe" name="nom" id="nom" 
+                value={formData.groupeName}
+                onChange={handleChange} />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="dateFin">
+            Date de fin d’inscription<span className="text-red-500">*</span>
+          </Label>
+          <Input
+            type="date"
+            placeholder="Date de fin d’inscription"
+            name="dateFin"
+            id="dateFin"
+            disabledDate={disabledDate}
+            disabledTime={disabledDateTime}
+            showTime={{
+              defaultValue: dayjs('00:00:00', 'HH:mm:ss'),
+            }}
+            value={formData.dateFinInscription ? dayjs(formData.dateFinInscription) : null}
+            onChange={(date, dateString) => handleDateChange(date, dateString, "dateFinInscription")}
+        
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="dateInscription">
+            Date de début des cours <span className="text-red-500">*</span>
+          </Label>
+          {inputFields.map((input, index) => {
+                return (
+                  
+          <div key={index}>
+          <Input
+            type="date"
+            placeholder="Date de début des cours "
+            name="dateInscription"
             
+            value={input.name}
+            id="dateInscription"
+            onChange={event => handleFormChange(index, event)}
+          />
+        </div>
+          )
+          
 })}
 
 </div>
 
-          <Button className="w-full" onClick={handleSubmit}>Sauvegarder</Button>
-        </form>
-      </DialogContent>
-    </Dialog>
-  );
+        <Button className="w-full" onClick={handleSubmit}>Sauvegarder</Button>
+      </form>
+    </DialogContent>
+  </Dialog>
+);
 }*/

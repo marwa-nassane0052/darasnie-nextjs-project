@@ -44,7 +44,7 @@ export default function Page() {
         </AddSessionDialog>
       </div>
       <hr />
-      <div className="mt-6 grid md:grid-cols-2 lg:grid-cols-4 gap-80">
+      <div className="mt-6 grid md:grid-cols-3 gap-4">
         <AddSessionDialog fetchData={fetchData}></AddSessionDialog>
         {data?.map((s) => (
           <Card key={s._id} className=" w-[300px] transition ease-in-out delay-150  hover:-translate-y-1 hover:drop-shadow-2xl duration-300" opacity-25={!s.valide} >

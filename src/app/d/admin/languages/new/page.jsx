@@ -25,10 +25,10 @@ import { FaPlus } from "react-icons/fa";
 import { MarkdownEditor } from "../_components/MarkdownEditor";
 import { FiUpload } from "react-icons/fi";
 import { useState } from "react";
-
+import { addNewLangugeB } from "@/actions/client/groups";
 const LEVELS = ["A1", "A2", "B1", "B2"];
-const SUBJECTS = ["Grammaire", "Vocabulaire"];
-const LANGUAGES = ["Francais", "Arabe", "Anglais"];
+const SUBJECTS = ["grammaire", "vocabulaire"];
+const LANGUAGES = ["francais", "arabe", "anglais"];
 
 export default function Page() {
   const form = useForm({
@@ -51,11 +51,31 @@ export default function Page() {
 
   async function onSubmit(values) {
     console.log({ ...values, examen });
+    const formData = new FormData();
+    formData.append('level', JSON.stringify({
+      name: values.level,
+      linguistic: values.subject,
+      language: values.language,
+      steps: values.steps.map(step => ({ title: step.title, content: step.content })),
+      examnPath: "" // Empty for now, as it is not directly used in the DTO
+    }));
+
+  formData.append('examFile', examen);    
+
+
+    try{
+      await addNewLangugeB(formData)
+    }catch(err){
+      console.log(err)
+    }
   }
 
   const uploadExamen = (event) => {
     setExamen(event.target.files[0]);
   };
+  const addNewLanguge=()=>{
+    console.log(form.values)
+  }
 
   return (
     <div>

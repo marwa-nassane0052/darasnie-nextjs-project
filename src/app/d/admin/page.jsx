@@ -1,9 +1,24 @@
+"use client"
 import React from "react";
 import Cards from "./_components/Cards";
 import Stat from "./_components/Stat";
 import Lang from "./_components/Lang";
-
+import { useState,useEffect } from "react";
 export default function page() {
+  const [data,setData]=useState([])
+  useEffect(() => {
+    const fetchDataFromApi = async () => {
+      try {
+        const res=await getAdminNotification()
+        setData(res)
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchDataFromApi();
+  }, []);
+
   return (
     <div>
     <h2 className="text-2xl font-bold mb-4">Overview</h2>

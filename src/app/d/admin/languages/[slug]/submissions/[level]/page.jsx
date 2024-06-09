@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import {
   Table,
@@ -12,7 +13,10 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { FaLink } from "react-icons/fa";
-
+import { AwardIcon } from "lucide-react";
+import { studentList } from "@/actions/client/groups";
+import { upgradeStudent } from "@/actions/client/groups";
+import { useState,useEffect } from "react";
 const submissions = [
   {
     id: "1",
@@ -49,7 +53,36 @@ const submissions = [
   },
 ];
 
-export default function page() {
+
+export default function page({params}) {
+  
+
+  const [data,setData]=useState([])
+  useEffect(() => {
+    async function fetchLessonCounts() {
+      try {
+        const res= await studentList(params.slug,params.level)
+        setData(res)
+      } catch (error) {
+        console.error("Error fetching lesson counts:", error);
+      }
+    }
+
+    fetchLessonCounts();
+  }, []);
+
+  async function onSubmit(slug,idS) {
+    try {
+      await upgradeStudent(slug,idS);
+      // Refresh the list of professors after validation
+      const updatedResponse = await studentList(params.slug,params.level);
+      setData(updatedResponse);
+     
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   return (
     <div>
       <h1 className="font-bold text-xl mb-8">Liste des soumissions</h1>
@@ -66,24 +99,24 @@ export default function page() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {submissions.map((item) => (
-            <TableRow key={item.id}>
+          {data?.map((item) => (
+            <TableRow key={item.idStudent}>
               <TableCell className="font-medium flex gap-2 items-center">
                 <Avatar className="h-[42px] w-[42px]">
                   <AvatarImage src={item.image} alt="profile image" />
                   <AvatarFallback>SC</AvatarFallback>
                 </Avatar>
                 <div>
-                  <p>{item.name}</p>
+                  <p>{item.name} {item.familyname}</p>
                   <p className="text-xs text-gray-400">{item.email}</p>
                 </div>
               </TableCell>
-              <TableCell>{item.subject}</TableCell>
-              <TableCell>{item.level}</TableCell>
+              <TableCell>{item.linguistic}</TableCell>
+              <TableCell>{params.level}</TableCell>
 
               <TableCell>
                 <Link
-                  href={item.submission}
+                  href={""}
                   target="_blank"
                   rel="noreferer"
                   className="flex gap-2 text-blue items-center"
@@ -92,7 +125,7 @@ export default function page() {
                 </Link>
               </TableCell>
               <TableCell className="text-right space-x-2">
-                <Button className="bg-green-500 hover:bg-green-600">
+                <Button className="bg-green-500 hover:bg-green-600" onClick={() => onSubmit(params.slug,item.idStudent)}>
                   Pass
                 </Button>
                 <Button variant="destructive">Fail</Button>

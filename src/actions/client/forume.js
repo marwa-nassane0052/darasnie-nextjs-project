@@ -11,7 +11,6 @@ const cookieStore = cookies();
 export const getForumeBYIdSession=async(idS) =>{
     try{
       const res=await _axios.get(`http://localhost:3030/forum/getForum/${idS}`)
-      console.log(res.data)
       return res.data
     }catch(err){
       console.log(err)
@@ -21,7 +20,6 @@ export const getForumeBYIdSession=async(idS) =>{
   export const getAllPostOfForum=async(idF) =>{
     try{
       const res=await _axios.get(`http://localhost:3030/forum/${idF}/posts`)
-      console.log(res.data)
       return res.data
     }catch(err){
       console.log(err)
@@ -30,8 +28,7 @@ export const getForumeBYIdSession=async(idS) =>{
 
   export const createPost=async(idF,body) =>{
     try{
-      const token=cookieStore.get('userToken')
-      console.log(token)
+    
       const res=await _axios.post(`http://localhost:3030/forum/${idF}/posts`,body)
       return res.data
     }catch(err){
@@ -42,7 +39,6 @@ export const getForumeBYIdSession=async(idS) =>{
   export const getAllcommentOfPost=async(idP) =>{
     try{
       const res=await _axios.get(`http://localhost:3030/forum/getcomments/${idP}`)
-      console.log(res.data)
       return res.data
     }catch(err){
       console.log(err)
