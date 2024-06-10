@@ -75,7 +75,7 @@ export default function page() {
     <div>
       <h1 className="font-bold text-xl mb-8">Demande des Sessions</h1>
       <hr />
-      <Table>
+      <Table className="overflow-y-auto">
         <TableCaption>La liste des demandes.</TableCaption>
         <TableHeader>
           <TableRow>

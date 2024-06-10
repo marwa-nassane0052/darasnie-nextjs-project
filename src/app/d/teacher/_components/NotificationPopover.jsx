@@ -6,7 +6,10 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AiTwotoneNotification } from "react-icons/ai";
 import { MdDone } from "react-icons/md";
-
+import { useEffect } from 'react';
+import { getUserInfo } from '@/actions/client/groups';
+import { getProfNotification } from '@/actions/client/groups';
+import { AwardIcon } from 'lucide-react';
 const initialNotifications = [
   {
     id: 1,
@@ -75,6 +78,24 @@ const initialNotifications = [
 ];
 
 export function NotificationPopover() {
+
+  const [data, setData] = useState(initialNotifications);
+  const [notificationProf,setNotificationProf]=useState([])
+  useEffect(() => {
+    const fetchDataFromApi = async () => {
+      try {
+        const res = await getUserInfo();
+        setData(res);
+        const res2=await getProfNotification(res.email)
+        setNotificationProf(res2)
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchDataFromApi();
+  }, []);
+
   const [notifications, setNotifications] = useState(initialNotifications);
 
   // Trier les notifications par date décroissante
@@ -103,7 +124,7 @@ export function NotificationPopover() {
           <IoIosNotificationsOutline className="w-8 h-8" />
           {unreadCount > 0 && (
             <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
-              {unreadCount}
+              {notificationProf.length}
             </span>
           )}
         </div>
@@ -115,7 +136,7 @@ export function NotificationPopover() {
         <ScrollArea className="max-h-80 rounded-md border">
           <div className="max-h-80 p-2">
             <div className="grid gap-2">
-              {unreadNotifications.map((notification) => (
+              {notificationProf.map((notification) => (
                 <div key={notification.id} className={`border-b pb-2 mb-2 flex items-start gap-3 bg-white`}>
                   <Avatar className="h-8 w-8">
                     <AvatarFallback className="bg-[#d6c6f4]">
@@ -123,11 +144,11 @@ export function NotificationPopover() {
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-grow">
-                    <div className="text-sm font-medium">{notification.user}</div>
+                    <div className="text-sm font-medium">{notification.familyname}</div>
                     <div className="text-xs text-gray-500">
-                      {notification.date.toLocaleDateString()} {notification.date.toLocaleTimeString()}
+                    {new Date(notification.created_at).toLocaleDateString()} {new Date(notification.created_at).toLocaleTimeString()}
                     </div>
-                    <div className="text-sm">{notification.content}</div>
+                    <div className="text-sm">{notification.notificationContent}</div>
                   </div>
                   {!notification.read && (
                     <button onClick={() => handleNotificationRead(notification.id)} className="text-green-500">

@@ -24,10 +24,10 @@ export default function Page() {
     const fetchDataFromApi = async () => {
       try {
         const response = await getAllProf();
-        if (response.success) {
-          setProfs(response.data);
+        if (response) {
+          setProfs(response);
         } else {
-          console.error(response.data);
+          console.error(response);
         }
       } catch (error) {
         console.error(error);
@@ -42,10 +42,10 @@ export default function Page() {
       await validateProf(idP);
       // Refresh the list of professors after validation
       const updatedResponse = await getAllProf();
-      if (updatedResponse.success) {
-        setProfs(updatedResponse.data);
+      if (updatedResponse) {
+        setProfs(updatedResponse);
       } else {
-        console.error(updatedResponse.data);
+        console.error(updatedResponse);
       }
     } catch (err) {
       console.log(err);

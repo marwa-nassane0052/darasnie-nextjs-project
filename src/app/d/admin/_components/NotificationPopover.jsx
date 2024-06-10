@@ -1,99 +1,50 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AiTwotoneNotification } from "react-icons/ai";
 import { MdDone } from "react-icons/md";
+import { getAdminNotification } from '@/actions/client/groups';
 
 const initialNotifications = [
-  {
-    id: 1,
-    user: 'TOUAHRI sara',
-    content: 'crée une session.',
-    date: new Date('2024-06-07T10:30:00'),
-    profileImage: 'https://randomuser.me/api/portraits/women/1.jpg',
-    read: false
-  },
-  {
-    id: 2,
-    user: 'NASSANE marwa',
-    content: 'crée un groupe.',
-    date: new Date('2024-06-06T14:20:00'),
-    profileImage: 'https://randomuser.me/api/portraits/men/2.jpg',
-    read: false
-  },
-  {
-    id: 3,
-    user: 'YAHIAOUI meriem',
-    content: 'Ajouter une publication',
-    date: new Date('2024-06-06T09:15:00'),
-    profileImage: 'https://randomuser.me/api/portraits/men/3.jpg',
-    read: false
-  },
-  {
-    id: 4,
-    user: 'BAKKHOUCHA wafaa',
-    content: 'Ajouter une publication',
-    date: new Date('2024-06-05T16:45:00'),
-    profileImage: 'https://randomuser.me/api/portraits/men/4.jpg',
-    read: false
-  },
-  {
-    id: 5,
-    user: 'SIDIELMRABET malak aya',
-    content: 'fait un nouveau commentaire.',
-    date: new Date('2024-06-05T14:30:00'),
-    profileImage: 'https://randomuser.me/api/portraits/women/5.jpg',
-    read: false
-  },
-  {
-    id: 6,
-    user: 'user1',
-    content: 'Ajouter une publication',
-    date: new Date('2024-06-05T11:25:00'),
-    profileImage: 'https://randomuser.me/api/portraits/men/6.jpg',
-    read: false
-  },
-  {
-    id: 7,
-    user: 'user2',
-    content: 'Ajouter une publication',
-    date: new Date('2024-06-04T08:20:00'),
-    profileImage: 'https://randomuser.me/api/portraits/women/7.jpg',
-    read: false
-  },
-  {
-    id: 8,
-    user: 'user3',
-    content: 'Ajouter une publication',
-    date: new Date('2024-06-04T08:20:00'),
-    profileImage: 'https://randomuser.me/api/portraits/women/7.jpg',
-    read: false
-  }
+  // Your initial notifications here...
 ];
 
 export function NotificationPopover() {
-  const [notifications, setNotifications] = useState(initialNotifications);
+  const [data, setData] = useState(null);
 
-  // Trier les notifications par date décroissante
-  const latestNotifications = notifications.sort((a, b) => b.date - a.date);
+  useEffect(() => {
+    const fetchDataFromApi = async () => {
+      try {
+        const res = await getAdminNotification();
+        setData(res);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-  // Filtrer les notifications non lues
+    fetchDataFromApi();
+  }, []);
+
+  // Sort notifications by date in descending order
+  const latestNotifications = data?.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+  // Filter unread notifications
   const unreadNotifications = latestNotifications.filter(notification => !notification.read);
 
-  // Compter les notifications non lues
+  // Count unread notifications
   const unreadCount = unreadNotifications.length;
 
-  const handleNotificationRead = (id) => {
-    const updatedNotifications = notifications.map(notification => {
-      if (notification.id === id) {
+  const handleNotificationRead = (_id) => {
+    const updatedNotifications = data.map(notification => {
+      if (notification._id === _id) {
         return { ...notification, read: true };
       }
       return notification;
     });
-    setNotifications(updatedNotifications);
+    setData(updatedNotifications);
   };
 
   return (
@@ -115,22 +66,22 @@ export function NotificationPopover() {
         <ScrollArea className="max-h-80 rounded-md border">
           <div className="max-h-80 p-2">
             <div className="grid gap-2">
-              {unreadNotifications.map((notification) => (
-                <div key={notification.id} className={`border-b pb-2 mb-2 flex items-start gap-3 bg-white`}>
+              {latestNotifications?.map((notification) => (
+                <div key={notification._id} className={`border-b pb-2 mb-2 flex items-start gap-3 bg-white`}>
                   <Avatar className="h-8 w-8">
                     <AvatarFallback className="bg-[#d6c6f4]">
                       <AiTwotoneNotification />
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-grow">
-                    <div className="text-sm font-medium">{notification.user}</div>
+                    <div className="text-sm font-medium">{notification.name} {notification.familyname}</div>
                     <div className="text-xs text-gray-500">
-                      {notification.date.toLocaleDateString()} {notification.date.toLocaleTimeString()}
+                      {new Date(notification.created_at).toLocaleDateString()} {new Date(notification.created_at).toLocaleTimeString()}
                     </div>
-                    <div className="text-sm">{notification.content}</div>
+                    <div className="text-sm">{notification.notificationContent}</div>
                   </div>
                   {!notification.read && (
-                    <button onClick={() => handleNotificationRead(notification.id)} className="text-green-500">
+                    <button onClick={() => handleNotificationRead(notification._id)} className="text-green-500">
                       <MdDone />
                     </button>
                   )}

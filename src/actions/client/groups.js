@@ -50,7 +50,6 @@ export const CreateSessionCem=async(body) =>{
   export const getAllGroupContainerById=async(idGc) =>{
     try{
       const res=await _axios.get(`http://localhost:3006/group-container/getGroupcontainerwithId/${idGc}`)
-      console.log(res.data)
       return res.data
     }catch(err){
       console.log(err)
@@ -168,7 +167,6 @@ export const getStudentPlaning=async(idGC) =>{
 export const getUserInfo=async() =>{
   try{
     const res=await _axios.get(`http://localhost:3001/auth/getInfoUser`)
-    console.log(res.data)
     return res.data
   }catch(err){
     console.log(error.message)
@@ -298,7 +296,7 @@ export const  testAPi=async(idG)=>{
 //http://localhost:3040/session-notification/adminNotification
 export const  getAdminNotification=async()=>{
   try{
-    const res=await _axios.post(`http://localhost:3040/session-notification/adminNotification`)
+    const res=await _axios.get(`http://localhost:3040/session-notification/adminNotification`)
     return res.data
   }catch(err){
     console.log(err)
@@ -353,6 +351,7 @@ export const  inscriptionDansLangue=async(idL)=>{
 export const  getStepsContet=async(idL,ns)=>{
   try{
     const res=await _axios.post(`http://localhost:8090/student/${idL}/${ns}/upgradeStep`)
+
     return res.data
   }catch(err){
     console.log(err)
@@ -386,6 +385,51 @@ export const  studentList=async(idL,le)=>{
 export const  upgradeStudent=async(idL,idS)=>{
   try{
     const res=await _axios.post(`http://localhost:8090/admin/${idL}/submissions/${idS}/upgradeLevel`)
+    console.log(res.data)
+    return res.data
+  }catch(err){
+    console.log(err)
+  }
+}
+
+
+
+//get prof notification
+export const  getProfNotification=async(email)=>{
+  try{
+    const res=await _axios.get(`http://localhost:3040/session-notification/profNotification/${email}`)
+    console.log(res.data)
+    return res.data
+  }catch(err){
+    console.log(err)
+  }
+}
+
+
+export const  getSessionNUmber=async()=>{
+  try{
+    const res=await _axios.get(`http://localhost:3002/session/sessionNumber`)
+    return res.data
+  }catch(err){
+    console.log(err)
+  }
+}
+
+//http://localhost:3001/auth/stdeuntNumber
+export const  getStudentNumber=async()=>{
+  try{
+    const res=await _axios.get(`http://localhost:3001/auth/stdeuntNumber`)
+    console.log(res.data)
+    return res.data
+  }catch(err){
+    console.log(err)
+  }
+}
+
+
+export const  getProfNumber=async()=>{
+  try{
+    const res=await _axios.get(`http://localhost:3001/auth/profNumber`)
     console.log(res.data)
     return res.data
   }catch(err){

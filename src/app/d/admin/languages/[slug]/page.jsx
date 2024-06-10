@@ -24,47 +24,107 @@ import {
 import { FaPlus } from "react-icons/fa";
 import { MarkdownEditor } from "../_components/MarkdownEditor";
 import { FiUpload } from "react-icons/fi";
-import { useState } from "react";
+import { Avatar } from "antd";
+import { useState , useEffect  } from "react";
+import {getLevel , updateLevel} from "@/actions/client/language";
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { displayFile } from "./[levelName]/[examSolutionPath]/page";
 
 const DUMMY_CONTENT = {
-  language: "Francais",
-  subject: "Grammaire",
-  level: "B1",
-  examen: "Examen-sample.pdf",
+  language: "----",
+  linguistic: "-----",
+  name: "-",
+  examnFile: "-------",
   steps: [
-    { title: "Step 1 title", content: "content of step 1" },
-    { title: "Step 2 title", content: "content of step 2" },
+    { title: "---", content: "----------" },
+    { title: "---", content: "----------" },
   ],
 };
+const dummy_data = {
+  "name":"A1",
+  "language":"francais",
+  "linguistic":"vocabulaire",
+  "steps":[
+      {"title":"title  1 updated 2" , "content": "content arabe 1"},
+      {"title":"title  arabe 2" , "content": "content arabe 2"},
+      {"title":"title  arabe 3" , "content": "content arabe 3"},
+      {"title":"title  arabe 4" , "content": "content arabe 4"}
+  ]
+}
 
-const LEVELS = ["A1", "A2", "B1", "B2"];
-const SUBJECTS = ["Grammaire", "Vocabulaire"];
-const LANGUAGES = ["Francais", "Arabe", "Anglais"];
+var LEVELS = ["A1", "A2", "B1", "B2","C1", "C2"];
+var SUBJECTS = ["grammaire", "vocabulaire"];
 
-export default function page() {
-  let data = DUMMY_CONTENT;
+export default function page({params}) {
+
+  const router = useRouter();
+
+  const searchParams = useSearchParams();
+  const [data, setData] = useState("");
   const form = useForm({
     defaultValues: {
-      ...DUMMY_CONTENT,
+      name: "",
+      language: "",
+      linguistic: "",
+      examnFile:"",
+      steps: [
+        { title: "", content: "" }
+      ],
     },
   });
+  const [examen, setExamen] = useState(null);
+  useEffect(() => {
+    const fetchDataFromApi = async () => {
+      try {
+        const responseData = await getLevel(params.slug , searchParams.get("levelName"));
+        form.setValue("language", responseData.language);
+        form.setValue("linguistic", responseData.linguistic);
+        form.setValue("name", responseData.name);
+        form.setValue("examnFile", responseData.examFile );
+        form.setValue("steps", responseData.steps);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchDataFromApi();
+  }, [params.slug , searchParams.get("levelName")]);
+  
+
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "steps",
   });
-  const [examen, setExamen] = useState(null);
 
   const addStepFields = () => {
     append({ title: "", content: "" });
   };
 
   async function onSubmit(values) {
-    values = examen ? { ...values, examen } : values;
-    console.log(values);
+    try {
+      // Create a FormData object
+      const formData = new FormData();
+      formData.append("updatesJson",JSON.stringify(values));
+      if(examen) {
+        formData.append("file" , examen);
+      }
+      formData.updatesJson = values;
+      // Send the FormData object to the backend
+      const res = await updateLevel(formData , params.slug ,searchParams.get("levelName"));
+      
+      console.log(res);
+      console.log(formData.get("updatesJson"));
+      router.push('/d/admin/languages');
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   const uploadExamen = (event) => {
-    if (event.target.files[0]) setExamen(event.target.files[0]);
+    if (event.target.files[0]) {
+      setExamen(event.target.files[0]);
+    }
   };
 
   return (
@@ -81,27 +141,7 @@ export default function page() {
               <FormItem>
                 <FormLabel>Langue</FormLabel>
                 <FormControl>
-                  <Select
-                    name="language"
-                    id="language"
-                    {...field}
-                    value={field.value}
-                    onValueChange={field.onChange}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Langue" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Langue</SelectLabel>
-                        {LANGUAGES.map((language) => (
-                          <SelectItem key={language} value={language}>
-                            {language}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                  <Input placeholder="Francais" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -109,14 +149,14 @@ export default function page() {
           />
           <FormField
             control={form.control}
-            name="subject"
+            name="linguistic"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Sujet</FormLabel>
                 <FormControl>
                   <Select
-                    name="subject"
-                    id="subject"
+                    name="linguistic"
+                    id="linguistic"
                     {...field}
                     value={field.value}
                     onValueChange={field.onChange}
@@ -127,9 +167,9 @@ export default function page() {
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Sujet</SelectLabel>
-                        {SUBJECTS.map((subject) => (
-                          <SelectItem key={subject} value={subject}>
-                            {subject}
+                        {SUBJECTS.map((name) => (
+                          <SelectItem key={name} value={name}>
+                            {name}
                           </SelectItem>
                         ))}
                       </SelectGroup>
@@ -142,14 +182,14 @@ export default function page() {
           />
           <FormField
             control={form.control}
-            name="level"
+            name="name"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Niveau</FormLabel>
                 <FormControl>
                   <Select
-                    name="level"
-                    id="level"
+                    name="name"
+                    id="name"
                     {...field}
                     value={field.value}
                     onValueChange={field.onChange}
@@ -191,7 +231,7 @@ export default function page() {
                   render={({ field }) => (
                     <MarkdownEditor
                       textareaProps={{
-                        placeholder: "Content here",
+                        placeholder: "content",
                       }}
                       {...field}
                     />
@@ -226,18 +266,19 @@ export default function page() {
                 <Input
                   type="file"
                   className="opacity-0 absolute top-0 left-0 w-full h-full cursor-pointer"
-                  id="examen"
-                  name="examen"
+                  id="examn"
+                  name="examn"
                   onChange={uploadExamen}
                 />
                 <label htmlFor="examen" className="cursor-pointer block mt-3">
                   <span className="text-black flex items-center justify-center">
-                    <FiUpload className="mr-2" />{" "}
-                    {data["examen"] ? (
-                      <strong>{data["examen"]}</strong>
+                    <FiUpload className="mr-2" />
+                    {examen ? (
+                          <strong>{examen.name}</strong>                      
                     ) : (
-                      "Importez examen"
+                          form.getValues("examnFile")
                     )}
+                   
                   </span>
                 </label>
               </div>

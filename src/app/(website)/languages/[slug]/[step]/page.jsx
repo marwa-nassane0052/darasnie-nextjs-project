@@ -9,15 +9,15 @@ import { getSTeps } from "@/actions/client/groups";
 const DUMMY_DATA = {
   steps: [
     {
-      id: "0",
+      id: "-1",
       label: "Step 1",
     },
     {
-      id: "1",
+      id: "0",
       label: "Step 2",
     },
     {
-      id: "2",
+      id: "1",
       label: "Step 3",
     },
   ],

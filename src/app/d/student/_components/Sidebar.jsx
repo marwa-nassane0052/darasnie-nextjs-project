@@ -7,12 +7,9 @@ import { FaListAlt, FaRegCalendarAlt } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
 import { MdLogout, MdWindow } from "react-icons/md";
 import { IoLanguage } from "react-icons/io5";
-<<<<<<< HEAD
 import Image from "next/image";
-=======
 import { handleLogout } from "@/actions/server/auth";
 
->>>>>>> 7d5fb1cedc122aefbd71e658baec31015eacd2b8
 const MENU_ITEMS = [
 
   {

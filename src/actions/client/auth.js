@@ -95,17 +95,11 @@ import { _fetch } from "@/lib/fetch-api";
 import { revalidatePath, revalidateTag } from "next/cache";
 export const getAllProf = async () => {
   try {
-    let res = await _fetch(`http://localhost:3001/user/profs`,false,{method:"GET",next:{tags:['getProf']}});
-    res=await res.json()
-      return{
-        success:true,
-        data:res
-      }
+    const res = await _axios.get(`http://localhost:3001/user/profs`);
+    console.log(res.data)
+    return res.data
   } catch (err) {
-    return{
-      success:false,
-      data:err.message
-    }
+     console.log(err)
   }
 };
 

@@ -12,6 +12,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { CreateLanguage } from "@/actions/client/language"
+
 import {
   Select,
   SelectContent,
@@ -25,17 +27,19 @@ import { FaPlus } from "react-icons/fa";
 import { MarkdownEditor } from "../_components/MarkdownEditor";
 import { FiUpload } from "react-icons/fi";
 import { useState } from "react";
-import { addNewLangugeB } from "@/actions/client/groups";
-const LEVELS = ["A1", "A2", "B1", "B2"];
-const SUBJECTS = ["grammaire", "vocabulaire"];
-const LANGUAGES = ["francais", "arabe", "anglais"];
+import { useRouter } from 'next/navigation';
 
-export default function Page() {
+const LEVELS = ["A1", "A2", "B1", "B2" , "C1", "C2"];
+const SUBJECTS = ["grammaire", "vocabulaire"];
+
+export default function page() {
+  const router = useRouter();
+
   const form = useForm({
     defaultValues: {
+      name:"",
+      linguistic: "",
       language: "",
-      subject: "",
-      level: "",
       steps: [],
     },
   });
@@ -49,33 +53,27 @@ export default function Page() {
     append({ title: "", content: "" });
   };
 
-  async function onSubmit(values) {
-    console.log({ ...values, examen });
-    const formData = new FormData();
-    formData.append('level', JSON.stringify({
-      name: values.level,
-      linguistic: values.subject,
-      language: values.language,
-      steps: values.steps.map(step => ({ title: step.title, content: step.content })),
-      examnPath: "" // Empty for now, as it is not directly used in the DTO
-    }));
+  const onSubmit = async (values) => {
+    try {
+      // Create a FormData object
+      const formData = new FormData();
+      formData.append('level', JSON.stringify(values));
+      formData.append('examFile', examen);
 
-  formData.append('examFile', examen);    
-
-
-    try{
-      await addNewLangugeB(formData)
-    }catch(err){
-      console.log(err)
+      // Send the FormData object to the backend
+      const res = await CreateLanguage(formData);
+      console.log(res);
+      console.log(formData);
+      router.push('/d/admin/languages');
+    } catch (error) {
+      console.error(error);
     }
-  }
+  };
+   
 
   const uploadExamen = (event) => {
     setExamen(event.target.files[0]);
   };
-  const addNewLanguge=()=>{
-    console.log(form.values)
-  }
 
   return (
     <div>
@@ -91,27 +89,7 @@ export default function Page() {
               <FormItem>
                 <FormLabel>Langue</FormLabel>
                 <FormControl>
-                  <Select
-                    name="language"
-                    id="language"
-                    {...field}
-                    value={field.value}
-                    onValueChange={field.onChange}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Langue" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Langue</SelectLabel>
-                        {LANGUAGES.map((language) => (
-                          <SelectItem key={language} value={language}>
-                            {language}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                  <Input placeholder="Francais" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -119,14 +97,14 @@ export default function Page() {
           />
           <FormField
             control={form.control}
-            name="subject"
+            name="linguistic"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Sujet</FormLabel>
                 <FormControl>
                   <Select
-                    name="subject"
-                    id="subject"
+                    name="linguistic"
+                    id="linguistic"
                     {...field}
                     value={field.value}
                     onValueChange={field.onChange}
@@ -137,9 +115,9 @@ export default function Page() {
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Sujet</SelectLabel>
-                        {SUBJECTS.map((subject) => (
-                          <SelectItem key={subject} value={subject}>
-                            {subject}
+                        {SUBJECTS.map((name) => (
+                          <SelectItem key={name} value={name}>
+                            {name}
                           </SelectItem>
                         ))}
                       </SelectGroup>
@@ -152,14 +130,14 @@ export default function Page() {
           />
           <FormField
             control={form.control}
-            name="level"
+            name="name"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Niveau</FormLabel>
                 <FormControl>
                   <Select
-                    name="level"
-                    id="level"
+                    name="name"
+                    id="name"
                     {...field}
                     value={field.value}
                     onValueChange={field.onChange}
@@ -170,9 +148,9 @@ export default function Page() {
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Niveau</SelectLabel>
-                        {LEVELS.map((level) => (
-                          <SelectItem key={level} value={level}>
-                            {level}
+                        {LEVELS.map((name) => (
+                          <SelectItem key={name} value={name}>
+                            {name}
                           </SelectItem>
                         ))}
                       </SelectGroup>

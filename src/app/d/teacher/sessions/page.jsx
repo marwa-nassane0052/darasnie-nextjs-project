@@ -72,9 +72,10 @@ export default function Page() {
             </CardContent>
             <CardFooter>
               <Button variant="link" disabled={!s.valide} className="ml-auto">
-                <Link href={`/d/teacher/sessions/${s._id}/forum`}>Forum</Link>
+                <Link href={`/d/teacher/sessions/${s._id}/forum`}>
+                  Forum
+                </Link>
               </Button>
-              
               <Button disabled={!s.valide}>
                 <Link href={`/d/teacher/sessions/${s._id}`}>Details</Link>
               </Button>

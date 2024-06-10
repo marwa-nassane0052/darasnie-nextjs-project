@@ -1,17 +1,13 @@
 "use client"
+import React, { useEffect, useState } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import React from "react";
 import { FaCheck } from "react-icons/fa";
 import { LuTrash2 } from "react-icons/lu";
-import { useEffect, useState } from "react";
-import { getAllGroupContainerById } from "@/actions/client/groups";
-import { validateSession } from "@/actions/client/groups";
+import { getAllGroupContainerById, validateSession, refuseSession } from "@/actions/client/groups";
 import { useRouter } from "next/navigation";
-import { refuseSession } from "@/actions/client/groups";
-
-export default function page({ params }) {
-  const router = useRouter()
+export default function Page({ params }) {
+  const router = useRouter();
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -25,37 +21,32 @@ export default function page({ params }) {
     };
 
     fetchDataFromApi();
-  }, []);
+  }, [params.slug]);
 
-
-  async function onSubmit() {
+  async function onSubmit(idS) {
     try {
-      validateSession(params.slug)
-      router.push('/d/admin/sessions')
+      await validateSession(idS);
+      router.push('/d/admin/sessions');
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-
   }
 
   async function refuseS() {
     try {
-      refuseSession(params.slug)
-      router.push('/d/admin/sessions')
+      await refuseSession(params.slug);
+      router.push('/d/admin/sessions');
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-
   }
-
- 
 
   return (
     <div>
-      <h1 className="font-bold text-xl">Details de Session  </h1>
+      <h1 className="font-bold text-xl">Details de Session</h1>
       <hr className="my-6" />
-      {data.map(session => (
-        <div className="border overflow-hidden max-w-[920px]">
+      {data.map((session) => (
+        <div key={session._id} className="border overflow-hidden max-w-[920px]">
           <div className="h-[180px] bg-[#E4D9FF]">
             <div className="mx-auto w-fit translate-y-1/2">
               <Avatar className="h-[200px] w-[200px] p-6 bg-slate-200">
@@ -109,7 +100,7 @@ export default function page({ params }) {
               </div>
             </div>
             <div className="space-x-3 mx-auto w-fit mt-8">
-              <Button className="bg-green-500 gap-3 hover:bg-green-600" onClick={onSubmit}>
+              <Button className="bg-green-500 gap-3 hover:bg-green-600" onClick={() => onSubmit(params.slug)}>
                 <FaCheck /> Accepter
               </Button>
               <Button className="bg-red-500 gap-3 hover:bg-red-600" onClick={refuseS}>
@@ -119,8 +110,6 @@ export default function page({ params }) {
           </div>
         </div>
       ))}
-
     </div>
-
   );
 }
