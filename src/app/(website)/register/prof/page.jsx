@@ -42,8 +42,7 @@ const formSchema = z
     phone: z.coerce.number(),
     password: z.string().min(6).max(50),
     password2: z.string().min(6),
-    Cv: z.string(),
-    picture: z.string(),
+    
 
   }).superRefine(({ password2, password }, ctx) => {
     if (password2 !== password) {
@@ -66,11 +65,20 @@ export default function AddSessionDialog({ children }) {
       phone: null,
       password: "",
       password2: "",
-      picture: "",
-      Cv: ""
-
+   
     }
   })
+
+  const [Cv,setCv]=useState()
+  const [picture,setPicture]=useState()
+
+  const handelChnageCV=(event)=>{
+    setCv(event.target.files[0])
+  }
+  const handelChnagePicture=(event)=>{
+    setPicture(event.target.files[0])
+  }
+
 
   const [isDisabled, setIsdisabled] = useState(true)
   const { toast } = useToast();
@@ -80,24 +88,22 @@ export default function AddSessionDialog({ children }) {
     delete values.password2;
 
     const formData = new FormData();
-    formData.append('name', form.getValues('name'));
+    formData.append('name', values.name);
     formData.append('familyname', values.familyname);
     formData.append('phone', values.phone);
 
     formData.append('password', values.password);
     formData.append('email', values.email);
-     formData.append('picture', values.picture);
-
-    const dataBody = JSON.stringify(formData)
-    console.log(values)
+    formData.append('picture', picture);
+    formData.append('Cv', Cv);
 
     try {
-      const res = singupProf(values)
+      const res = singupProf(formData)
       toast({
-        title: "Sign up Successful",
-        description: "Verifier votre email pour le lien de validation",
+        title: "Inscription réussie",
+        description: "vous devez attendu jusqu'à acceptation de admin pour connect a la platforme",
       });
-      //router.push('/signin');
+      router.push('/signin');
 
     } catch (err) {
       toast({
@@ -230,7 +236,8 @@ export default function AddSessionDialog({ children }) {
                           type="file"
                           className="opacity-0 absolute top-0 left-0 w-full h-full cursor-pointer"
                           id="file"
-                          {...field}
+                          onChange={handelChnageCV}
+
                         />
                         <label htmlFor="file" className="cursor-pointer block mt-3">
                           <span className="text-black flex items-center justify-center">
@@ -258,7 +265,7 @@ export default function AddSessionDialog({ children }) {
                           type="file"
                           className="opacity-0 absolute top-0 left-0 w-full h-full cursor-pointer"
                           id="image"
-                          {...field}
+                          onChange={handelChnagePicture}
                         />
                         <label htmlFor="file" className="cursor-pointer block mt-3">
                           <span className="text-black flex items-center justify-center ">

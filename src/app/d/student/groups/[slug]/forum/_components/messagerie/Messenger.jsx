@@ -1,10 +1,12 @@
+"use client"
 import { useEffect, useState } from 'react';
+import React from 'react';
 import { useRouter } from 'next/router';
 import io from 'socket.io-client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { IoIosSend } from 'react-icons/io';
-import { sendMessage, getMessagesByChatGroup, getChatGroups } from '@/lib/api'; // Assurez-vous que ce chemin est correct
+import { sendMessage, getMessagesByChatGroup, getChatGroups } from '@/actions/client/messagerie'; // Assurez-vous que ce chemin est correct
 
 const socket = io('http://localhost:3030');  // Replace with your server URL and port
 

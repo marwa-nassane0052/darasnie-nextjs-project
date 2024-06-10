@@ -64,12 +64,18 @@ export default function StudentProfile() {
     },
   });
   const [data,setData]=useState()
+  const [major,setMajour]=useState()
   useEffect(() => {
     const fetchDataFromApi = async () => {
       try {
         const response = await getUserInfo();
         form.reset(response);
         setData(response);
+        if(response.level === "cem"){
+          setMajour(false)
+        }else if(response.level ==="lycee"){
+          setMajour(true)
+        }
         
       } catch (error) {
         console.error(error);
@@ -313,73 +319,78 @@ export default function StudentProfile() {
             </FormItem>
           )}
         />
-        <h2 className="font-bold text-lg mt-8 mb-4">Specialite</h2>
-        <FormField
-          control={form.control}
-          name="major"
-          disabled
-          render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="grid md:grid-cols-2 gap-2"
-                >
-                  <label
-                    className={`flex items-center justify-between flex-row-reverse space-x-3 space-y-0 p-6 border rounded-lg ring-2 ${
-                      form.getValues("major") == "math"
-                        ? "ring-primary"
-                        : "ring-gray-400"
-                    }`}
+    
+    {data?.level === "lycee" && (
+        <>
+          <h2 className="font-bold text-lg mt-8 mb-4">Specialite</h2>
+          <FormField
+            control={form.control}
+            name="major"
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="grid md:grid-cols-2 gap-2"
                   >
-                    <FormControl>
-                      <RadioGroupItem value="math" />
-                    </FormControl>
-                    <FormLabel className="font-normal ">matheleme</FormLabel>
-                  </label>
-                  <label
-                    className={`flex items-center justify-between flex-row-reverse space-x-3 space-y-0 p-6 border rounded-lg ring-2 ${
-                      form.getValues("major") == "science"
-                        ? "ring-primary"
-                        : "ring-gray-400"
-                    }`}
-                  >
-                    <FormControl>
-                      <RadioGroupItem value="science" />
-                    </FormControl>
-                    <FormLabel className="font-normal ">Scientifique</FormLabel>
-                  </label>
-                  <label
-                    className={`flex items-center justify-between flex-row-reverse space-x-3 space-y-0 p-6 border rounded-lg ring-2 ${
-                      form.getValues("major") == "lettre"
-                        ? "ring-primary"
-                        : "ring-gray-400"
-                    }`}
-                  >
-                    <FormControl>
-                      <RadioGroupItem value="lettre" />
-                    </FormControl>
-                    <FormLabel className="font-normal ">lettre</FormLabel>
-                  </label>
-                  <label
-                    className={`flex items-center justify-between flex-row-reverse space-x-3 space-y-0 p-6 border rounded-lg ring-2 ${
-                      form.getValues("major") == "gestion"
-                        ? "ring-primary"
-                        : "ring-gray-400"
-                    }`}
-                  >
-                    <FormControl>
-                      <RadioGroupItem value="gestion" />
-                    </FormControl>
-                    <FormLabel className="font-normal">gestion</FormLabel>
-                  </label>
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                    <label
+                      className={`flex items-center justify-between flex-row-reverse space-x-3 space-y-0 p-6 border rounded-lg ring-2 ${
+                        form.getValues("major") == "math"
+                          ? "ring-primary"
+                          : "ring-gray-400"
+                      }`}
+                    >
+                      <FormControl>
+                        <RadioGroupItem value="math" />
+                      </FormControl>
+                      <FormLabel className="font-normal">matheleme</FormLabel>
+                    </label>
+                    <label
+                      className={`flex items-center justify-between flex-row-reverse space-x-3 space-y-0 p-6 border rounded-lg ring-2 ${
+                        form.getValues("major") == "science"
+                          ? "ring-primary"
+                          : "ring-gray-400"
+                      }`}
+                    >
+                      <FormControl>
+                        <RadioGroupItem value="science" />
+                      </FormControl>
+                      <FormLabel className="font-normal">Scientifique</FormLabel>
+                    </label>
+                    <label
+                      className={`flex items-center justify-between flex-row-reverse space-x-3 space-y-0 p-6 border rounded-lg ring-2 ${
+                        form.getValues("major") == "lettre"
+                          ? "ring-primary"
+                          : "ring-gray-400"
+                      }`}
+                    >
+                      <FormControl>
+                        <RadioGroupItem value="lettre" />
+                      </FormControl>
+                      <FormLabel className="font-normal">lettre</FormLabel>
+                    </label>
+                    <label
+                      className={`flex items-center justify-between flex-row-reverse space-x-3 space-y-0 p-6 border rounded-lg ring-2 ${
+                        form.getValues("major") == "gestion"
+                          ? "ring-primary"
+                          : "ring-gray-400"
+                      }`}
+                    >
+                      <FormControl>
+                        <RadioGroupItem value="gestion" />
+                      </FormControl>
+                      <FormLabel className="font-normal">gestion</FormLabel>
+                    </label>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </>
+      )}
+        
       </form>
     </Form>
   );

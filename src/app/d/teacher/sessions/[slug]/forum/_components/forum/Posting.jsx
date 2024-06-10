@@ -18,6 +18,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useToast } from "@/components/ui/use-toast";
+
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,6 +27,7 @@ import { addComment } from "@/actions/client/forume";
 
 import { useEffect,useState } from "react";
 import { getAllcommentOfPost } from "@/actions/client/forume";
+import { AwardIcon } from "lucide-react";
 const formSchema = z.object({
   content:z.string(),
 });
@@ -48,15 +51,21 @@ export default function Posting({name,role,titre,text,createdAT,img,idP}) {
 
     fetchDataFromApi();
   }, []); 
+  const { toast } = useToast();
 
 
   async function onSubmit(e){
     e.preventDefault();
     try{
       const values=form.getValues()
-      console.log(values)
-      const res=addComment(idP,values)
-      console.log(res)
+      await addComment(idP,values)
+      toast({
+        title: "commentaire ajouté avec succès",
+        description: "  ",
+      });
+      form.reset(); 
+      const responseData = await getAllcommentOfPost(idP);
+      setData(responseData);   
     }catch(e){
       console.log(e)
     }

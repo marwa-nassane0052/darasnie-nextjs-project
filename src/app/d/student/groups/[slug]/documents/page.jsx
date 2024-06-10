@@ -1,24 +1,53 @@
+"use client"
 import { Button } from "@/components/ui/button";
 import { MdOutlineFileDownload } from "react-icons/md";
 import { IoDocumentText } from "react-icons/io5";
+import { getFileGroup } from "@/actions/client/groups";
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { FaPlus } from "react-icons/fa";
+import { Input } from "@/components/ui/input";
+import { useState, useEffect } from "react";
+import { uploadFile } from "@/actions/client/groups";
+import { getFileContent } from "@/actions/client/groups";
+import Link from "next/link";
+import { saveAs } from 'file-saver';
+import { useToast } from "@/components/ui/use-toast";
 
-export default function page({ params }) {
+
+export default function Page({ params }) {
+  const [file, setFile] = useState(null);
+  const [files, setFiles] = useState([]);
+  const idGroup = params.slug;
+ 
+
+  useEffect(() => {
+    const fetchDataFromApi = async () => {
+      try {
+        const responseData = await getFileGroup(idGroup);
+        setFiles(responseData);
+        console.log(responseData)
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchDataFromApi();
+  }, [idGroup]);
+
+
+
+ 
+
   return (
     <div className="max-w-[870px]">
       <Breadcrumb>
         <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/d/student/groups">Groups</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbPage>Group {params.slug}</BreadcrumbPage>
           </BreadcrumbItem>
@@ -28,17 +57,34 @@ export default function page({ params }) {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <h1 className="font-bold text-xl my-6">Mes Documents</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="font-bold text-xl my-6">Mes Documents</h1>
+
+       
+      </div>
+
       <div className="w-full p-5 bg-white rounded-xl space-y-4">
-        <DocumentItem />
-        <DocumentItem />
-        <DocumentItem />
+        {files?.map((filePath, index) => (
+          <DocumentItem key={index} filePath={filePath} />
+        ))}
       </div>
     </div>
   );
 }
 
-const DocumentItem = () => {
+const DocumentItem = ({ filePath }) => {
+  const fileNameWithExtension = filePath.split('/').pop(); // Extracting the file name with extension
+  const fileName = fileNameWithExtension.split('.')[0]; // Extracting the file name without extension
+
+  const handleDownload = async () => {
+    try {
+      const response = await fetch(`http://localhost:3002/document/fileContent/${fileNameWithExtension}`);
+      const blob = await response.blob();
+      saveAs(blob, fileNameWithExtension);
+    } catch (error) {
+      console.error('Error downloading file:', error);
+    }
+  }; 
   return (
     <div className="border p-4 flex items-center justify-between">
       <div className="flex items-center gap-4">
@@ -46,7 +92,9 @@ const DocumentItem = () => {
           <IoDocumentText size={24} />
         </div>
         <div>
-          <p className="font-bold text-lg">Exercices de probabilités</p>
+          <Link href={`http://localhost:3002/document/fileContent/${fileNameWithExtension}`} target="blank">
+            <p className="font-bold text-lg">{fileName}</p>
+          </Link>
           <p className="text-sm text-gray-500">
             {new Date("13 Mars 2024").toDateString()}
           </p>
@@ -54,7 +102,7 @@ const DocumentItem = () => {
       </div>
       <div>
         <Button variant="ghost">
-          <MdOutlineFileDownload size={22} className="text-primary" />
+          <MdOutlineFileDownload  onClick={handleDownload}  size={22} className="text-primary" />
         </Button>
       </div>
     </div>

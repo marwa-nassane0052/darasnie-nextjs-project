@@ -121,7 +121,7 @@ export default async function page({ params }) {
                       <Link
                         href={
                           session
-                            ? `/apply/${item.id}`
+                            ? `/apply/${item._id}`
                             : `/signin?source=/tutors/${params.slug}`
                         }
                       >

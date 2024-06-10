@@ -7,6 +7,7 @@ import { useFormState, useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import {FlipCard} from "@/components/FlipCard";
+import { applyStudent } from "@/actions/client/groups";
 import {
   Form,
   FormControl,
@@ -17,6 +18,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectValue, SelectContent,SelectItem } from "@/components/ui/select"; // Import the required components
+import { useState,useEffect } from "react";
+import { getGroupById } from "@/actions/client/groups";
+import { AwardIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { testAPi } from "@/actions/client/groups";
+
+
 
 const formSchema = z.object({
   email: z.string().email({ message: "Email invalide" }),
@@ -29,7 +37,7 @@ const formSchema = z.object({
   expirationDate: z.string().regex(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/, { message: "Date d'expiration invalide" }),
 });
 
-export default function page() {
+export default function page({params}) {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,26 +51,64 @@ export default function page() {
   });
   const { toast } = useToast();
 
-  async function apply(values) {
-    let account = values.account;
+  const [data,setData]=useState([])
+  const groupId=params.slug
+  useEffect(() => {
+    async function fetchLessonCounts() {
+      try {
+        const res= await getGroupById(groupId)
+        setData(res)
+      } catch (error) {
+        console.error("Error fetching lesson counts:", error);
+      }
+    }
+
+    fetchLessonCounts();
+  }, []);
+
+  const router=useRouter()
+  const apply = async () => {
+    const res=await testAPi()
     try {
-      // To add: apply to backend
-      toast({
-        title: "Application Success",
-        description: "Vous pouvez visiter votre dashboard",
-      });
+      const res=await testAPi()
+      if(res.success === false){
+        toast({
+          title: "Application  not Success",
+          description: "tu ne peut pas rejoindre ce group",
+        });
+
+      }else{
+        const payload = {
+          idGC: data?.groupContainer,
+          idGroup: groupId,
+        };
+        await applyStudent(payload);
+        toast({
+          title: "Application Success",
+          description: "Vous pouvez visiter votre dashboard",
+        });
+        router.push('/d/student/groups')
+      }
+      
+     
     } catch (error) {
       toast({
         title: "Application a echoue",
         description: "Il y avait un erreur pendant l'application",
       });
     }
-  }
+  };
   return (
     <div className="flex justify-center items-center p-2 h-screen">
       <div className=" w-96">
       <Form {...form}>
-        <form className="space-y-8 bg-white rounded-xl shadow px-2" onSubmit={form.handleSubmit(apply)}>
+          
+      <form className="space-y-8 bg-white rounded-xl shadow p-6" 
+         onSubmit={(e) => {
+          e.preventDefault();
+          form.handleSubmit(apply)();
+        }}
+        >
         <h2 className="text-lg font-medium">Informations de Facturation</h2>
         <div className="grid grid-cols-2 gap-4">
             <FormField
@@ -134,13 +180,13 @@ export default function page() {
             {/* Card Info */}
             <h2 className="text-lg font-medium">Informations de la Carte</h2>
             <div className="grid grid-cols-2 gap-4">
-        
+      
           <FormField
             control={form.control}
             name="account"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Numero de compte</FormLabel>
+                <FormLabel>Numero de compte   </FormLabel>
                 <FormControl>
                   <Input type="text" placeholder="BD0144FGR" {...field} />
                 </FormControl>
@@ -162,7 +208,9 @@ export default function page() {
               )}
             />
             </div>
-          <SubmitButton />
+  
+
+          <SubmitButton  />
         </form>
       </Form>
       </div>

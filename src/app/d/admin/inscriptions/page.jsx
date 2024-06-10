@@ -16,7 +16,7 @@ import { FaCheck, FaLink } from "react-icons/fa";
 import { LuTrash2 } from "react-icons/lu";
 import { getAllProf, validateProf } from "@/actions/client/auth";
 import { useState, useEffect } from "react";
-
+import { refuseProf } from "@/actions/client/groups";
 export default function Page() {
   const [profs, setProfs] = useState([]);
 
@@ -40,6 +40,21 @@ export default function Page() {
   async function onSubmit(idP) {
     try {
       await validateProf(idP);
+      // Refresh the list of professors after validation
+      const updatedResponse = await getAllProf();
+      if (updatedResponse.success) {
+        setProfs(updatedResponse.data);
+      } else {
+        console.error(updatedResponse.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function refuse(idP) {
+    try {
+      await refuseProf(idP);
       // Refresh the list of professors after validation
       const updatedResponse = await getAllProf();
       if (updatedResponse.success) {
@@ -84,20 +99,17 @@ export default function Page() {
               <TableCell>{item.email}</TableCell>
               <TableCell>{item.phone}</TableCell>
               <TableCell>
-                {item.isValid ? (
+               
                   <Link
-                    href={item.cv}
+                    href={`http://localhost:3001/auth/fileContent/${item.Cv.split('/').pop()}`}
                     target="_blank"
                     rel="noreferer"
                     className="flex gap-2 text-blue items-center"
                   >
                     <FaLink /> Lire le document
                   </Link>
-                ) : (
-                  <span className="flex gap-2 text-gray-500 items-center">
-                    <FaLink /> Non disponible
-                  </span>
-                )}
+               
+                
               </TableCell>
               <TableCell>
                 <span
@@ -118,7 +130,7 @@ export default function Page() {
                 >
                   <FaCheck />
                 </Button>
-                <Button size="icon" variant="destructive">
+                <Button size="icon" variant="destructive"  onClick={() => refuse(item.user._id)}>
                   <LuTrash2 />
                 </Button>
               </TableCell>
