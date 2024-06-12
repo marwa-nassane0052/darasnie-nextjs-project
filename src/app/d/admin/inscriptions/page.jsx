@@ -101,7 +101,7 @@ export default function Page() {
               <TableCell>
                
                   <Link
-                    href={`http://localhost:3001/auth/fileContent/${item.Cv.split('/').pop()}`}
+                    href={`http://localhost:7777/auth-service/auth/fileContent/${item.Cv.split('/').pop()}`}
                     target="_blank"
                     rel="noreferer"
                     className="flex gap-2 text-blue items-center"

@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 
 export const displayFile = async (examSolutionPath) => {
-  const response = await fetch(`http://localhost:8090/admin/display/${examSolutionPath}`);
+  const response = await fetch(`http://localhost:7777/arabeLanguage/admin/display/${examSolutionPath}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
@@ -80,7 +80,7 @@ export default function FileDisplay({params}){
         {renderFile()}
         <div style={{ marginTop: '20px' }}>
          <div class="flex justify-between">
-          <Button href={`http://localhost:8090/admin/download/${params.examSolutionPath}`} download className="btn btn-primary">Download File</Button>
+          <Button href={`http://localhost:7777/arabeLanguage/admin/download/${params.examSolutionPath}`} download className="btn btn-primary">Download File</Button>
           <Button href={fileUrl} target="_blank" rel="noopener noreferrer" className=" btn btn-primary btn-start rounded">Open File in browser</Button>
          </div>
         </div>

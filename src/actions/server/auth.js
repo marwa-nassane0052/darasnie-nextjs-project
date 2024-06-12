@@ -8,7 +8,7 @@ import { isRedirectError } from "next/dist/client/components/redirect";
 export async function verifyEmail(token) {
   try {
     let { data } = await axios.post(
-      "http://localhost:3001/auth/verify",
+      "http://localhost:7777/auth-service/auth/verify",
       {},
       { headers: { Authorization: token } }
     );

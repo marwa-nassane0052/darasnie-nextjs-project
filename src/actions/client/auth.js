@@ -10,7 +10,7 @@ import axios from "axios";
 export const sigupStudent = async (body) => {
   try {
     const res = await axios.post(
-      "http://localhost:3001/auth/signup/student",
+      "http://localhost:7777/auth-service/auth/signup/student",
       body
     );
     console.log(res);
@@ -25,7 +25,7 @@ export const signinUser = async (body) => {
   return new Promise(async (resolve, reject) => {
     try {
       const { data } = await axios.post(
-        "http://localhost:3001/auth/login",
+        "http://localhost:7777/auth-service/auth/login",
         body
       );
       resolve(data);
@@ -40,7 +40,7 @@ export const GetUserType = async () => {
   try {
     let session = await auth();
     if (!session) throw new Error("unauthorized");
-    const res = await axios.get("http://localhost:3001/auth/userRole", {
+    const res = await axios.get("http://localhost:7777/auth-service/auth/userRole", {
       headers: {
         Authorization: session.accessToken,
       },
@@ -55,7 +55,7 @@ export const singupProf = async (body) => {
   try {
     console.log("body is", body);
     const res = await axios.post(
-      "http://localhost:3001/auth/signup/prof",
+      "http://localhost:7777/auth-service/auth/signup/prof",
       body
     );
     console.log(res);
@@ -69,7 +69,7 @@ export const getProfId = async (body) => {
   try {
     let session = await auth();
     if (!session) throw new Error("unauthorized");
-    const res = await axios.get("http://localhost:3001/auth/user/prof", {
+    const res = await axios.get("http://localhost:7777/auth-service/auth/user/prof", {
       headers: {
         Authorization: session.accessToken,
       },
@@ -83,7 +83,7 @@ export const getProfId = async (body) => {
 
 export const getProfInfo = async (id) => {
   try {
-    const res = await axios.get(`http://localhost:3001/auth/profInfo/${id}`);
+    const res = await axios.get(`http://localhost:7777/auth-service/auth/profInfo/${id}`);
     console.log(res.data);
     return res.data;
   } catch (err) {
@@ -95,7 +95,7 @@ import { _fetch } from "@/lib/fetch-api";
 import { revalidatePath, revalidateTag } from "next/cache";
 export const getAllProf = async () => {
   try {
-    const res = await _axios.get(`http://localhost:3001/user/profs`);
+    const res = await _axios.get(`http://localhost:7777/auth-service/user/profs`);
     console.log(res.data)
     return res.data
   } catch (err) {
@@ -106,7 +106,7 @@ export const getAllProf = async () => {
 import { _fetchWithToken } from "@/lib/fetch-api";
 export const validateProf = async (idP) => {
   try {
-    let res = await _fetchWithToken(`http://localhost:3001/user/${idP}/activate`,
+    let res = await _fetchWithToken(`http://localhost:7777/auth-service/user/${idP}/activate`,
     false,
     {method:"PATCH"});
     res=await res.json()

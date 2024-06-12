@@ -9,7 +9,7 @@ import { PathParamsContext } from "next/dist/shared/lib/hooks-client-context.sha
 
 export const CreateLanguage = async (body) => {
     try {
-      const res = await axios.post('http://localhost:8090/admin/addLevel', body, {
+      const res = await axios.post('http://localhost:7777/arabeLanguage/admin/addLevel', body, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -25,7 +25,7 @@ export const CreateLanguage = async (body) => {
 //get submissions
 export const getSubmissions=async(idLang , levelName) =>{
     try{
-      let res = await _axios.get(`http://localhost:8090/admin/${idLang}/${levelName}/submissions`);
+      let res = await _axios.get(`http://localhost:7777/arabeLanguage/admin/${idLang}/${levelName}/submissions`);
       console.log(res.data)
       return res.data
     }catch(err){
@@ -36,7 +36,7 @@ export const getSubmissions=async(idLang , levelName) =>{
   //get liste of levels 
   export const getLevels=async() =>{
     try{
-      let res = await _axios.get('http://localhost:8090/admin/levels/all');
+      let res = await _axios.get('http://localhost:7777/arabeLanguage/admin/levels/all');
       console.log(res.data)
       return res.data
     }catch(err){
@@ -47,7 +47,7 @@ export const getSubmissions=async(idLang , levelName) =>{
   //get level
   export const getLevel=async(idLang, levelName) =>{
     try{
-      let res = await _axios.get(`http://localhost:8090/admin/${idLang}/levels/${levelName}`);
+      let res = await _axios.get(`http://localhost:7777/arabeLanguage/admin/${idLang}/levels/${levelName}`);
       console.log(res.data)
       return res.data
     }catch(err){
@@ -58,7 +58,7 @@ export const getSubmissions=async(idLang , levelName) =>{
   // update level
   export const updateLevel = async (body , idLang , levelName) => {
     try {
-      const res = await _axios.put(`http://localhost:8090/admin/${idLang}/levels/${levelName}/update`, body, {
+      const res = await _axios.put(`http://localhost:7777/arabeLanguage/admin/${idLang}/levels/${levelName}/update`, body, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -73,7 +73,7 @@ export const getSubmissions=async(idLang , levelName) =>{
   // upgrade Student
   export const upGradeStudent = async (idLang , idStudent) => {
     try {
-        let res = await _axios.post(`http://localhost:8090/admin/${idLang}/submissions/${idStudent}/upgradeLevel`);
+        let res = await _axios.post(`http://localhost:7777/arabeLanguage/admin/${idLang}/submissions/${idStudent}/upgradeLevel`);
         console.log(res.data);
       return res.data;
     } catch (err) {

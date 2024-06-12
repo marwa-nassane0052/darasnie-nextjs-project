@@ -78,7 +78,7 @@ const DocumentItem = ({ filePath }) => {
 
   const handleDownload = async () => {
     try {
-      const response = await fetch(`http://localhost:3002/document/fileContent/${fileNameWithExtension}`);
+      const response = await fetch(`http://localhost:7777/ms-group/document/fileContent/${fileNameWithExtension}`);
       const blob = await response.blob();
       saveAs(blob, fileNameWithExtension);
     } catch (error) {
@@ -92,7 +92,7 @@ const DocumentItem = ({ filePath }) => {
           <IoDocumentText size={24} />
         </div>
         <div>
-          <Link href={`http://localhost:3002/document/fileContent/${fileNameWithExtension}`} target="blank">
+          <Link href={`http://localhost:7777/ms-group/document/fileContent/${fileNameWithExtension}`} target="blank">
             <p className="font-bold text-lg">{fileName}</p>
           </Link>
           <p className="text-sm text-gray-500">

@@ -14,7 +14,7 @@ import { Rss } from "lucide-react";
 //
 export const CreateSessionCem=async(body) =>{
     try{
-      const res=await _axios.post('http://localhost:3002/session/createGroupContainerCem',body)
+      const res=await _axios.post('http://localhost:7777/ms-group/session/createGroupContainerCem',body)
       console.log(res.data)
       return res.data
       
@@ -28,7 +28,7 @@ export const CreateSessionCem=async(body) =>{
 
   export const CreateSessionLycee=async(body) =>{
     try{
-      const res=await _axios.post('http://localhost:3002/session/createGroupContainerLycee',body)
+      const res=await _axios.post('http://localhost:7777/ms-group/session/createGroupContainerLycee',body)
       console.log(res.data)
       return res.data
     }catch(err){
@@ -40,7 +40,7 @@ export const CreateSessionCem=async(body) =>{
   //get all group conatiner
   export const getAllGroupCOntainer=async() =>{
     try{
-      let res = await _axios.get('http://localhost:3006/group-container/getGroupcontainer');
+      let res = await _axios.get('http://localhost:7777/ms-projection/group-container/getGroupcontainer');
       return res.data
     }catch(err){
       console.log(err)
@@ -49,7 +49,7 @@ export const CreateSessionCem=async(body) =>{
 
   export const getAllGroupContainerById=async(idGc) =>{
     try{
-      const res=await _axios.get(`http://localhost:3006/group-container/getGroupcontainerwithId/${idGc}`)
+      const res=await _axios.get(`http://localhost:7777/ms-projection/group-container/getGroupcontainerwithId/${idGc}`)
       return res.data
     }catch(err){
       console.log(err)
@@ -61,7 +61,7 @@ export const CreateSessionCem=async(body) =>{
   export const getGroupContainerForProf=async() =>{
     try{
 
-      let res = await _fetchWithToken('http://localhost:3002/session/groupContainerForProf',false,{method:"GET",next:{tags:['getsession']}});
+      let res = await _fetchWithToken('http://localhost:7777/ms-group/session/groupContainerForProf',false,{method:"GET",next:{tags:['getsession']}});
       res=await res.json()
       return{
         success:true,
@@ -76,7 +76,7 @@ export const CreateSessionCem=async(body) =>{
   export const addGroup=async(body,idGC) =>{
     try{
 
-      const res=await _axios.post(`http://localhost:3002/group/createGroup/${idGC}`,body)
+      const res=await _axios.post(`http://localhost:7777/ms-group/group/createGroup/${idGC}`,body)
       return res.data
     }catch(err){
       console.log(err)
@@ -86,7 +86,7 @@ export const CreateSessionCem=async(body) =>{
   //get group container by id
   export const getGroupContainerByid=async(idGC) =>{
     try{
-      const res=await _axios.get(`http://localhost:3002/session/groupContainer/${idGC}`)
+      const res=await _axios.get(`http://localhost:7777/ms-group/session/groupContainer/${idGC}`)
       return res.data
     }catch(err){
       console.log(err)
@@ -96,7 +96,7 @@ export const CreateSessionCem=async(body) =>{
   //get group by groupContainer for each prof
   export const getGroupsByGroupContainerId=async(idGC) =>{
     try{
-      const res=await _axios.get(`http://localhost:3002/group/profGroup/${idGC}`)
+      const res=await _axios.get(`http://localhost:7777/ms-group/group/profGroup/${idGC}`)
       return res.data
     }catch(err){
       console.log(err)
@@ -106,7 +106,7 @@ export const CreateSessionCem=async(body) =>{
   //get prof planing 
   export const getProfPlaning=async(idGC) =>{
     try{
-      const res=await _axios.get(`http://localhost:3002/group/profPlaning`)
+      const res=await _axios.get(`http://localhost:7777/ms-group/group/profPlaning`)
       return res.data
     }catch(err){
       console.log(err)
@@ -116,7 +116,7 @@ export const CreateSessionCem=async(body) =>{
  //validate session
  export const validateSession=async(idGC) =>{
   try{
-    const res=await axios.post(`http://localhost:3002/session/validateGroupContainer/${idGC}`)
+    const res=await axios.post(`http://localhost:7777/ms-group/session/validateGroupContainer/${idGC}`)
     console.log(res.data)
     return res.data
   }catch(err){
@@ -126,7 +126,7 @@ export const CreateSessionCem=async(body) =>{
 
 export const getSessionFillter=async(body) =>{
   try{
-    const res=await _axios.post(`http://localhost:3006/group-container/getgc`,body)
+    const res=await _axios.post(`http://localhost:7777/ms-projection/group-container/getgc`,body)
     console.log(res.data)
     return res.data
 
@@ -138,7 +138,7 @@ export const getSessionFillter=async(body) =>{
 
 export const getAllTheGroupOfSession=async(idGC) =>{
   try{
-    const res=await _axios.get(`http://localhost:3002/session/sessiongroups/${idGC}`)
+    const res=await _axios.get(`http://localhost:7777/ms-group/session/sessiongroups/${idGC}`)
     console.log(res.data)
     return res.data
   }catch(err){
@@ -148,7 +148,7 @@ export const getAllTheGroupOfSession=async(idGC) =>{
 
 export const getAllTheGroupOfStudent=async(idGC) =>{
   try{
-    const res=await _axios.get(`http://localhost:3002/group/studentGroups`)
+    const res=await _axios.get(`http://localhost:7777/ms-group/group/studentGroups`)
     return res.data
   }catch(err){
     console.log(error.message)
@@ -157,7 +157,7 @@ export const getAllTheGroupOfStudent=async(idGC) =>{
 
 export const getStudentPlaning=async(idGC) =>{
   try{
-    const res=await _axios.get(`http://localhost:3002/group/studentPlaning`)
+    const res=await _axios.get(`http://localhost:7777/ms-group/group/studentPlaning`)
     return res.data
   }catch(err){
     console.log(error.message)
@@ -166,7 +166,7 @@ export const getStudentPlaning=async(idGC) =>{
 
 export const getUserInfo=async() =>{
   try{
-    const res=await _axios.get(`http://localhost:3001/auth/getInfoUser`)
+    const res=await _axios.get(`http://localhost:7777/auth-service/auth/getInfoUser`)
     return res.data
   }catch(err){
     console.log(error.message)
@@ -176,7 +176,7 @@ export const getUserInfo=async() =>{
 
 export const refuseProf=async(idP) =>{
   try{
-    const res=await _axios.delete(`http://localhost:3001/auth/deleteProf/${idP}`)
+    const res=await _axios.delete(`http://localhost:7777/auth-service/auth/deleteProf/${idP}`)
     console.log(res.data)
     return res.data
   }catch(err){
@@ -186,7 +186,7 @@ export const refuseProf=async(idP) =>{
 
 export const refuseSession=async(idGC) =>{
   try{
-    const res=await _axios.delete(`http://localhost:3002/session/refuseSession/${idGC}`)
+    const res=await _axios.delete(`http://localhost:7777/ms-group/session/refuseSession/${idGC}`)
     console.log(res.data)
     return res.data
   }catch(err){
@@ -197,7 +197,7 @@ export const refuseSession=async(idGC) =>{
 
 export const addStudentTOGroup=async() =>{
   try{
-    const res=await _axios.post(`http://localhost:3002/group/addStudent`)
+    const res=await _axios.post(`http://localhost:7777/ms-group/group/addStudent`)
     console.log(res.data)
     return res.data
   }catch(err){
@@ -207,7 +207,7 @@ export const addStudentTOGroup=async() =>{
 //localhost:3002/group/studentGroup/666249c94de7a608979957d4
 export const getAllStudentOfGroup=async(idG) =>{
   try{
-    const res=await _axios.get(`http://localhost:3002/group/studentGroup/${idG}`)
+    const res=await _axios.get(`http://localhost:7777/ms-group/group/studentGroup/${idG}`)
     return res.data
   }catch(err){
     console.log(err)
@@ -216,7 +216,7 @@ export const getAllStudentOfGroup=async(idG) =>{
 
 export const  uploadFile=async(body)=>{
   try{
-    const res=await _axios.post(`http://localhost:3002/document/addDocument`,body)
+    const res=await _axios.post(`http://localhost:7777/ms-group/document/addDocument`,body)
     console.log(res.data)
     return res.data
   }catch(err){
@@ -227,7 +227,7 @@ export const  uploadFile=async(body)=>{
 //document/getDocuments
 export const  getFileGroup=async(idGroup)=>{
   try{
-    const res=await axios.get(`http://localhost:3002/document/getDocuments/${idGroup}`)
+    const res=await axios.get(`http://localhost:7777/ms-group/document/getDocuments/${idGroup}`)
     return res.data
   }catch(err){
     console.log(err)
@@ -236,7 +236,7 @@ export const  getFileGroup=async(idGroup)=>{
 
 export const  getFileContent=async(path)=>{
   try{
-    const res=await axios.get(`http://localhost:3002/document/fileContent/${path}`)
+    const res=await axios.get(`http://localhost:7777/ms-group/document/fileContent/${path}`)
     return res.data
   }catch(err){
     console.log(err)
@@ -245,17 +245,17 @@ export const  getFileContent=async(path)=>{
 
 export const  getPayemtStudent=async()=>{
   try{
-    const res=await _axios.get('http://localhost:3002/group/studentPayment')
+    const res=await _axios.get('http://localhost:7777/ms-group/group/studentPayment')
     return res.data
   }catch(err){
     console.log(err)
   }
 }
 
-//http://localhost:3002/group/allPayment
+//http://localhost:7777/ms-group/group/allPayment
 export const  getAllPayment=async()=>{
   try{
-    const res=await _axios.get('http://localhost:3002/group/allPayment')
+    const res=await _axios.get('http://localhost:7777/ms-group/group/allPayment')
     return res.data
   }catch(err){
     console.log(err)
@@ -265,7 +265,7 @@ export const  getAllPayment=async()=>{
 //appaly student
 export const  applyStudent=async(body)=>{
   try{
-    const res=await _axios.post('http://localhost:3002/group/addStudent',body)
+    const res=await _axios.post('http://localhost:7777/ms-group/group/addStudent',body)
     console.log(res.data)
     return res.data
   }catch(err){
@@ -275,17 +275,17 @@ export const  applyStudent=async(body)=>{
 
 export const  getGroupById=async(idG)=>{
   try{
-    const res=await _axios.get(`http://localhost:3002/group/groupInfo/${idG}`)
+    const res=await _axios.get(`http://localhost:7777/ms-group/group/groupInfo/${idG}`)
     return res.data
   }catch(err){
     console.log(err)
   }
 }
 
-//used just for test //http://localhost:3002/group/msg
+//used just for test //http://localhost:7777/ms-group/group/msg
 export const  testAPi=async(idG)=>{
   try{
-    const res=await _axios.get(`http://localhost:3002/group/msg`)
+    const res=await _axios.get(`http://localhost:7777/ms-group/group/msg`)
     console.log(res.data)
     return res.data
   }catch(err){
@@ -293,10 +293,10 @@ export const  testAPi=async(idG)=>{
   }
 }
 
-//http://localhost:3040/session-notification/adminNotification
+//http://localhost:7777/ms-notification/session-notification/adminNotification
 export const  getAdminNotification=async()=>{
   try{
-    const res=await _axios.get(`http://localhost:3040/session-notification/adminNotification`)
+    const res=await _axios.get(`http://localhost:7777/ms-notification/session-notification/adminNotification`)
     return res.data
   }catch(err){
     console.log(err)
@@ -305,7 +305,7 @@ export const  getAdminNotification=async()=>{
 
 export const addNewLangugeB=async(body)=>{
   try{
-    const res=await _axios.post(`http://localhost:8090/admin/addLevel`,body)
+    const res=await _axios.post(`http://localhost:7777/arabeLanguage/admin/addLevel`,body)
     console.log(res.data)
     return res.data
   }catch(err){
@@ -315,7 +315,7 @@ export const addNewLangugeB=async(body)=>{
 
 export const getAllLevel=async()=>{
   try{
-    const res=await _axios.get(`http://localhost:8090/admin/levels/all`)
+    const res=await _axios.get(`http://localhost:7777/arabeLanguage/admin/levels/all`)
     console.log(res.data)
     return res.data
   }catch(err){
@@ -326,7 +326,7 @@ export const getAllLevel=async()=>{
 //localhost:8090/student/languages
 export const  getlangugeForStudent=async()=>{
   try{
-    const res=await _axios.get(`http://localhost:8090/student/languages`)
+    const res=await _axios.get(`http://localhost:7777/arabeLanguage/student/languages`)
     console.log(res.data)
     return res.data
   }catch(err){
@@ -337,7 +337,7 @@ export const  getlangugeForStudent=async()=>{
 //localhost:8090/student/66658a84e8a57c2ac2318528/inscription
 export const  inscriptionDansLangue=async(idL)=>{
   try{
-    const res=await _axios.post(`http://localhost:8090/student/${idL}/inscription`)
+    const res=await _axios.post(`http://localhost:7777/arabeLanguage/student/${idL}/inscription`)
     console.log(res.data)
     return res.data
   }catch(err){
@@ -350,7 +350,7 @@ export const  inscriptionDansLangue=async(idL)=>{
 //localhost:8090/student/66658bcbe8a57c2ac231852b/0/upgradeStep
 export const  getStepsContet=async(idL,ns)=>{
   try{
-    const res=await _axios.post(`http://localhost:8090/student/${idL}/${ns}/upgradeStep`)
+    const res=await _axios.post(`http://localhost:7777/arabeLanguage/student/${idL}/${ns}/upgradeStep`)
 
     return res.data
   }catch(err){
@@ -361,7 +361,7 @@ export const  getStepsContet=async(idL,ns)=>{
 //localhost:8090/admin/66658bcbe8a57c2ac231852b/levels/A2
 export const  getSTeps=async(idL,le)=>{
   try{
-    const res=await _axios.get(`http://localhost:8090/admin/${idL}/levels/${le}`)
+    const res=await _axios.get(`http://localhost:7777/arabeLanguage/admin/${idL}/levels/${le}`)
     return res.data
   }catch(err){
     console.log(err)
@@ -373,7 +373,7 @@ export const  getSTeps=async(idL,le)=>{
 //get student list
 export const  studentList=async(idL,le)=>{
   try{
-    const res=await _axios.get(`http://localhost:8090/admin/${idL}/${le}/submissions`)
+    const res=await _axios.get(`http://localhost:7777/arabeLanguage/admin/${idL}/${le}/submissions`)
     return res.data
   }catch(err){
     console.log(err)
@@ -384,7 +384,7 @@ export const  studentList=async(idL,le)=>{
 //localhost:8090/admin/${idL}/submissions/${idS}/upgradeLevel
 export const  upgradeStudent=async(idL,idS)=>{
   try{
-    const res=await _axios.post(`http://localhost:8090/admin/${idL}/submissions/${idS}/upgradeLevel`)
+    const res=await _axios.post(`http://localhost:7777/arabeLanguage/admin/${idL}/submissions/${idS}/upgradeLevel`)
     console.log(res.data)
     return res.data
   }catch(err){
@@ -397,7 +397,7 @@ export const  upgradeStudent=async(idL,idS)=>{
 //get prof notification
 export const  getProfNotification=async(email)=>{
   try{
-    const res=await _axios.get(`http://localhost:3040/session-notification/profNotification/${email}`)
+    const res=await _axios.get(`http://localhost:7777/ms-notification/session-notification/profNotification/${email}`)
     console.log(res.data)
     return res.data
   }catch(err){
@@ -408,17 +408,17 @@ export const  getProfNotification=async(email)=>{
 
 export const  getSessionNUmber=async()=>{
   try{
-    const res=await _axios.get(`http://localhost:3002/session/sessionNumber`)
+    const res=await _axios.get(`http://localhost:7777/ms-group/session/sessionNumber`)
     return res.data
   }catch(err){
     console.log(err)
   }
 }
 
-//http://localhost:3001/auth/stdeuntNumber
+//http://localhost:7777/auth-service/auth/stdeuntNumber
 export const  getStudentNumber=async()=>{
   try{
-    const res=await _axios.get(`http://localhost:3001/auth/stdeuntNumber`)
+    const res=await _axios.get(`http://localhost:7777/auth-service/auth/stdeuntNumber`)
     console.log(res.data)
     return res.data
   }catch(err){
@@ -429,7 +429,7 @@ export const  getStudentNumber=async()=>{
 
 export const  getProfNumber=async()=>{
   try{
-    const res=await _axios.get(`http://localhost:3001/auth/profNumber`)
+    const res=await _axios.get(`http://localhost:7777/auth-service/auth/profNumber`)
     console.log(res.data)
     return res.data
   }catch(err){
